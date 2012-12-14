@@ -23,20 +23,15 @@
  */
 package org.hibernate.engine.jdbc.internal.proxy;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Proxy;
-import java.sql.CallableStatement;
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Statement;
-
 import org.hibernate.engine.jdbc.spi.InvalidatableWrapper;
 import org.hibernate.engine.jdbc.spi.JdbcWrapper;
 import org.hibernate.engine.jdbc.spi.LogicalConnectionImplementor;
 import org.hibernate.internal.util.ValueHolder;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Proxy;
+import java.sql.*;
 
 /**
  * Centralized builder for proxy instances
@@ -296,12 +291,21 @@ public class ProxyBuilder {
 			ResultSet resultSet,
 			ConnectionProxyHandler connectionProxyHandler,
 			Connection connectionProxy) {
-		final ImplicitResultSetProxyHandler proxyHandler = new ImplicitResultSetProxyHandler(
-				resultSet,
-				connectionProxyHandler,
-				connectionProxy
-		);
-		try {
+        final InvocationHandler proxyHandler;
+
+        if("com.mysql.jdbc.JDBC4Connection".equals(connectionProxyHandler.getLogicalConnection().getConnection().getClass().getName())){
+            proxyHandler = new MysqlImplicitResultSetProxyHandler(
+                    resultSet,
+                    connectionProxyHandler,
+                    connectionProxy            );
+        } else {
+            proxyHandler = new ImplicitResultSetProxyHandler(
+                    resultSet,
+                    connectionProxyHandler,
+                    connectionProxy
+            );
+        }
+        try {
 			return resultSetProxyConstructorValue.getValue().newInstance( proxyHandler );
 		}
 		catch (Exception e) {
@@ -314,12 +318,24 @@ public class ProxyBuilder {
 			ConnectionProxyHandler connectionProxyHandler,
 			Connection connectionProxy,
 			Statement sourceStatement) {
-		final ImplicitResultSetProxyHandler proxyHandler = new ImplicitResultSetProxyHandler(
-				resultSet,
-				connectionProxyHandler,
-				connectionProxy,
-				sourceStatement
-		);
+
+        final InvocationHandler proxyHandler;
+
+        if("com.mysql.jdbc.JDBC4Connection".equals(connectionProxyHandler.getLogicalConnection().getConnection().getClass().getName())){
+            proxyHandler = new MysqlImplicitResultSetProxyHandler(
+                    resultSet,
+                    connectionProxyHandler,
+                    connectionProxy,
+                    sourceStatement
+            );
+        } else {
+            proxyHandler = new ImplicitResultSetProxyHandler(
+                    resultSet,
+                    connectionProxyHandler,
+                    connectionProxy,
+                    sourceStatement
+            );
+        }
 		try {
 			return resultSetProxyConstructorValue.getValue().newInstance( proxyHandler );
 		}

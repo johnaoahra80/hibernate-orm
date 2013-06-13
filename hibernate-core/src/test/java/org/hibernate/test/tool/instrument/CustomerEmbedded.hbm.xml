@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<!--
+
+-->
+
+<hibernate-mapping package="org.hibernate.test.tool.instrument">
+
+    <class name="CustomerEmbedded" table="T_USER" dynamic-update="true">
+        <id name="id"/>
+        <property name="firstName" column="`firstName`" />
+        <property name="lastName" column="`lastName`" />
+        <property name="address"  />
+    </class>
+
+    <class name="CustomerNonEmbedded" table="T_USER_NON" dynamic-update="true">
+        <id name="id"/>
+        <property name="firstName" column="`firstName`" />
+        <property name="lastName" column="`lastName`" />
+    </class>
+
+    <class name="CustomerEmbeddedEnhanced" table="T_USER_EN" dynamic-update="true">
+        <id name="id"/>
+        <property name="firstName" column="`firstName`" />
+        <property name="lastName" column="`lastName`" />
+        <property name="address"  />
+    </class>
+
+    <class name="CustomerNonEmbeddedEnhanced" table="T_USER_NON_EN" dynamic-update="true">
+        <id name="id"/>
+        <property name="firstName" column="`firstName`" />
+        <property name="lastName" column="`lastName`" />
+    </class>
+
+</hibernate-mapping>

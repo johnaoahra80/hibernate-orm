@@ -27,6 +27,7 @@ dependencies {
         // for test runtime
         transitive = true
     }
+    testCompile( libraries.ant )
 
     testRuntime( 'jaxen:jaxen:1.1' )
     testRuntime( libraries.javassist )
@@ -113,4 +114,9 @@ generateMainLoggingClasses.dependsOn jaxb
 generateMainLoggingClasses.dependsOn generateGrammarSource
 compileJava.dependsOn jaxb
 
-
+test {
+    testLogging {
+        // Show that tests are run in the command-line output
+        events 'started'
+    }
+}

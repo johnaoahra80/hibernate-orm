@@ -88,7 +88,6 @@ public class IntrumentEntityTest extends BaseCoreFunctionalTestCase {
             s.persist(customerEmbedded);
             tx.commit();
             s.close();
-            fail();
         } catch (Exception e) {
             e.printStackTrace();
             fail();

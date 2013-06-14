@@ -30,7 +30,8 @@ public class InterceptFieldClassFileTransformerTest {
 	
 	@Before
 	public void setup() {
-		entities.add( "org.hibernate.ejb.test.instrument.Simple" );
+        entities.add( "org.hibernate.ejb.test.instrument.Simple" );
+        entities.add( "org.hibernate.ejb.test.instrument.Customer" );
 		// use custom class loader which enhances the class
 		InstrumentedClassLoader cl = new InstrumentedClassLoader( Thread.currentThread().getContextClassLoader() );
 		cl.setEntities( entities );
@@ -59,17 +60,35 @@ public class InterceptFieldClassFileTransformerTest {
 		Method method = clazz.getDeclaredMethod( "getFieldHandler" );
 		Assert.assertNotNull( method );
 	}
-    
-	/**
-	 * Tests that methods that were enhanced by javassist have
-	 * StackMapTables for java verification. Without these,
-	 * java.lang.VerifyError's occur in JDK7.
-	 * 
-	 * @throws ClassNotFoundException
-	 * @throws InstantiationException
-	 * @throws IllegalAccessException
-	 * @throws IOException
-	 */
+
+    @Test
+    public void testCusomterEnhancement() throws Exception {
+        // sanity check that the class is unmodified and does not contain getFieldHandler()
+        try {
+            org.hibernate.ejb.test.instrument.Customer.class.getDeclaredMethod( "getFieldHandler" );
+            Assert.fail();
+        } catch ( NoSuchMethodException nsme ) {
+            // success
+        }
+
+        Class clazz = loader.loadClass( entities.get( 1 ) );
+
+        // javassist is our default byte code enhancer. Enhancing will eg add the method getFieldHandler()
+        // see org.hibernate.bytecode.internal.javassist.FieldTransformer
+        Method method = clazz.getDeclaredMethod( "getFieldHandler" );
+        Assert.assertNotNull( method );
+    }
+
+    /**
+     * Tests that methods that were enhanced by javassist have
+     * StackMapTables for java verification. Without these,
+     * java.lang.VerifyError's occur in JDK7.
+     *
+     * @throws ClassNotFoundException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     * @throws IOException
+     */
 	@Test
 	@TestForIssue(jiraKey = "HHH-7747")
 	public void testStackMapTableEnhancment() throws ClassNotFoundException,

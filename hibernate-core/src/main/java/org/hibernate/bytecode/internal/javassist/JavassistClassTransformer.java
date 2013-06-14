@@ -29,10 +29,13 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.security.ProtectionDomain;
+import java.util.Iterator;
 
 import javassist.ClassClassPath;
 import javassist.ClassPool;
 import javassist.bytecode.ClassFile;
+import javassist.bytecode.FieldInfo;
+import org.GNOME.Bonobo.FIELD_CONTENT_TYPE;
 import org.jboss.logging.Logger;
 
 import org.hibernate.HibernateException;
@@ -78,6 +81,7 @@ public class JavassistClassTransformer extends AbstractClassTransformerImpl {
 		cp.appendSystemPath();
 		cp.appendClassPath(new ClassClassPath(this.getClass()));
 		cp.appendClassPath(new ClassClassPath(classfile.getClass()));
+        loadFieldClasses(cp, loader, classfile);
 		try {
 			cp.makeClassIfNew(new ByteArrayInputStream(classfileBuffer));
 		} catch (IOException e) {
@@ -110,6 +114,19 @@ public class JavassistClassTransformer extends AbstractClassTransformerImpl {
 		return classfileBuffer;
 	}
 
+    private void loadFieldClasses(ClassPool cp, ClassLoader loader, ClassFile classfile){
+        Iterator fieldIterator = classfile.getFields().iterator();
+        while(fieldIterator.hasNext()){
+            FieldInfo field = (FieldInfo) fieldIterator.next();
+            Class<?> clazz;
+            try {
+                clazz = loader.loadClass(field.getDescriptor().replaceAll("/",".").replaceAll("L","").replaceAll(";", ""));
+                cp.appendClassPath(new ClassClassPath(clazz));
+            } catch (ClassNotFoundException e) {
+                //swallow
+            }
+        }
+    }
 	protected FieldTransformer getFieldTransformer(final ClassFile classfile, final ClassPool classPool) {
 		if ( alreadyInstrumented( classfile ) ) {
 			return null;

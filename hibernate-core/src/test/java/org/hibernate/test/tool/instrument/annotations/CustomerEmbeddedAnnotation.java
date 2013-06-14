@@ -1,7 +1,5 @@
 package org.hibernate.test.tool.instrument.annotations;
 
-import org.hibernate.test.tool.instrument.Address;
-
 import javax.persistence.*;
 import java.io.Serializable;
 

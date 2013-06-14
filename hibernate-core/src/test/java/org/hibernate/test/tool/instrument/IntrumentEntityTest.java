@@ -5,6 +5,7 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.bytecode.buildtime.internal.JavassistInstrumenter;
 import org.hibernate.bytecode.buildtime.spi.Logger;
+import org.hibernate.test.tool.different.another.Address;
 import org.hibernate.testing.junit4.BaseCoreFunctionalTestCase;
 import org.hibernate.tool.instrument.javassist.InstrumentTask;
 import org.junit.BeforeClass;

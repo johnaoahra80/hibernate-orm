@@ -1,5 +1,7 @@
 package org.hibernate.test.tool.instrument;
 
+import org.hibernate.test.tool.different.another.Address;
+
 import javax.persistence.*;
 import java.io.Serializable;
 

@@ -1,5 +1,7 @@
 package org.hibernate.test.tool.instrument;
 
+import org.hibernate.test.tool.different.another.Address;
+
 import javax.persistence.*;
 import java.io.Serializable;
 
@@ -32,7 +34,7 @@ public class CustomerEmbedded implements Serializable {
                     @AttributeOverride(name="country",column=@Column(name="C_COUNTRY")),
                     @AttributeOverride(name="zip",    column=@Column(name="C_ZIP")),
                     @AttributeOverride(name="phone",  column=@Column(name="C_PHONE"))})
-    private Address       address;
+    private Address address;
 
     @Version
     @Column(name = "C_VERSION")

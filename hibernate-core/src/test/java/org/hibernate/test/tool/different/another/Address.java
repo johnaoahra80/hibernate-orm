@@ -1,4 +1,4 @@
-package org.hibernate.test.tool.instrument;
+package org.hibernate.test.tool.different.another;
 
 import java.io.Serializable;
 

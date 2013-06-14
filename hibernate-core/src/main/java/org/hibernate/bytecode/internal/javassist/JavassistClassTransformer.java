@@ -35,7 +35,6 @@ import javassist.ClassClassPath;
 import javassist.ClassPool;
 import javassist.bytecode.ClassFile;
 import javassist.bytecode.FieldInfo;
-import org.GNOME.Bonobo.FIELD_CONTENT_TYPE;
 import org.jboss.logging.Logger;
 
 import org.hibernate.HibernateException;

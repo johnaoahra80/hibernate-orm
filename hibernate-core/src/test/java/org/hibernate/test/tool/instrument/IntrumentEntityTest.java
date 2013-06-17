@@ -64,6 +64,7 @@ public class IntrumentEntityTest extends BaseCoreFunctionalTestCase {
                 "UK", "111222", "0207111222");
     }
 
+/*
     @Test
     public void testNonEmbeddedCustomer() throws Exception {
         try {
@@ -79,6 +80,7 @@ public class IntrumentEntityTest extends BaseCoreFunctionalTestCase {
 
         }
     }
+*/
 
     @Test
     public void testEmbeddedCustomer() throws Exception {
@@ -97,6 +99,7 @@ public class IntrumentEntityTest extends BaseCoreFunctionalTestCase {
     }
 
 
+/*
     @Test
     public void testNonEmbeddedEnhancedCustomer() throws Exception {
         try {
@@ -128,6 +131,7 @@ public class IntrumentEntityTest extends BaseCoreFunctionalTestCase {
 
         }
     }
+*/
 
 
     protected static class LoggerBridge implements Logger {

@@ -204,7 +204,8 @@ public class EntityEntryContext {
 		}
 
 		EntityEntry theEntityEntry = managedEntity.$$_hibernate_getEntityEntry();
-		managedEntity.$$_hibernate_setEntityEntry( null );
+        // don't null out EntityEntry stored in enhanced entity
+        // managedEntity.$$_hibernate_setEntityEntry( null );
 		return theEntityEntry;
 	}
 
@@ -232,7 +233,8 @@ public class EntityEntryContext {
 		while ( node != null ) {
 			final ManagedEntity nextNode = node.$$_hibernate_getNextManagedEntity();
 
-			node.$$_hibernate_setEntityEntry( null );
+            // don't null out EntityEntry stored in enhanced entity
+            // node.$$_hibernate_setEntityEntry( null );
 			node.$$_hibernate_setPreviousManagedEntity( null );
 			node.$$_hibernate_setNextManagedEntity( null );
 

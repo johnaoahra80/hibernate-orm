@@ -39,6 +39,7 @@ import org.hibernate.engine.spi.EntityEntry;
 import org.hibernate.engine.spi.EntityKey;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.engine.spi.SessionImplementor;
+import org.hibernate.engine.spi.StatefulEntityEntry;
 import org.hibernate.engine.spi.Status;
 import org.hibernate.event.spi.EventSource;
 import org.hibernate.event.spi.SaveOrUpdateEvent;
@@ -181,7 +182,8 @@ public class DefaultSaveOrUpdateEventListener extends AbstractSaveEventListener 
 
 		final EventSource source = event.getSession();
 
-		EntityEntry entityEntry = event.getEntry();
+		//TODO: cast to correct concrete implementation
+		EntityEntry entityEntry = (StatefulEntityEntry) event.getEntry();
 		if ( entityEntry != null ) {
 			if ( entityEntry.getStatus() == Status.DELETED ) {
 				source.forceFlush( entityEntry );

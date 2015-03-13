@@ -30,7 +30,10 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 
 import org.hibernate.LockMode;
+import org.hibernate.SharedSessionBuilder;
 import org.hibernate.engine.spi.EntityEntry;
+import org.hibernate.engine.spi.SharedEntityEntry;
+import org.hibernate.engine.spi.StatefulEntityEntry;
 import org.hibernate.engine.spi.ManagedEntity;
 
 import org.jboss.logging.Logger;
@@ -239,7 +242,12 @@ public class EntityEntryContext {
 
 		// finally clean out the ManagedEntity and return the associated EntityEntry
 		final EntityEntry theEntityEntry = managedEntity.$$_hibernate_getEntityEntry();
-		managedEntity.$$_hibernate_setEntityEntry( null );
+
+		//JOH: need to think about implications for memory leaks here if we don't removed reference to EntityEntry
+		if(!(theEntityEntry instanceof SharedEntityEntry)) {
+			managedEntity.$$_hibernate_setEntityEntry(null);
+		}
+
 		return theEntityEntry;
 	}
 
@@ -278,7 +286,10 @@ public class EntityEntryContext {
 		while ( node != null ) {
 			final ManagedEntity nextNode = node.$$_hibernate_getNextManagedEntity();
 
-			node.$$_hibernate_setEntityEntry( null );
+			//JOH: need to think about implications for memory leaks here if we don't removed reference to EntityEntry
+			if(!(node.$$_hibernate_getEntityEntry() instanceof SharedEntityEntry)) {
+				node.$$_hibernate_setEntityEntry( null );
+			}
 			node.$$_hibernate_setPreviousManagedEntity( null );
 			node.$$_hibernate_setNextManagedEntity( null );
 
@@ -366,7 +377,7 @@ public class EntityEntryContext {
 		for ( int i = 0; i < count; i++ ) {
 			final boolean isEnhanced = ois.readBoolean();
 			final Object entity = ois.readObject();
-			final EntityEntry entry = EntityEntry.deserialize( ois, rtn );
+			final EntityEntry entry = StatefulEntityEntry.deserialize(ois, rtn);
 			final ManagedEntity managedEntity;
 			if ( isEnhanced ) {
 				managedEntity = (ManagedEntity) entity;

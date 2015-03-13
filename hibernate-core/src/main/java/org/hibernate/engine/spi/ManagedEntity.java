@@ -27,7 +27,7 @@ package org.hibernate.engine.spi;
  * Specialized {@link Managed} contract for entity classes.  Essentially provides access to information
  * about an instance's association to a Session/EntityManager.  Specific information includes:<ul>
  *     <li>
- *        the association's {@link EntityEntry} (by way of {@link #$$_hibernate_getEntityEntry} and
+ *        the association's {@link StatefulEntityEntry} (by way of {@link #$$_hibernate_getEntityEntry} and
  *        {@link #$$_hibernate_setEntityEntry}).  EntityEntry describes states, snapshots, etc.
  *     </li>
  *     <li>

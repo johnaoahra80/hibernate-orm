@@ -26,7 +26,7 @@ package org.hibernate.engine.internal;
 import org.hibernate.engine.spi.EntityEntryExtraState;
 
 /**
- * Contains optional state from {@link org.hibernate.engine.spi.EntityEntry}.
+ * Contains optional state from {@link org.hibernate.engine.spi.StatefulEntityEntry}.
  *
  * @author Emmanuel Bernard <emmanuel@hibernate.org>
  */

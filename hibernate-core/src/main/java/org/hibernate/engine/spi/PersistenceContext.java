@@ -190,7 +190,7 @@ public interface PersistenceContext {
 	public boolean containsEntity(EntityKey key);
 
 	/**
-	 * Remove an entity.  Also clears up all other state associated with the entity aside from the {@link EntityEntry}
+	 * Remove an entity.  Also clears up all other state associated with the entity aside from the {@link StatefulEntityEntry}
 	 *
 	 * @param key The key whose matching entity should be removed
 	 *
@@ -216,7 +216,7 @@ public interface PersistenceContext {
 	public Object getEntity(EntityUniqueKey euk);
 
 	/**
-	 * Retrieve the {@link EntityEntry} representation of the given entity.
+	 * Retrieve the {@link StatefulEntityEntry} representation of the given entity.
 	 *
 	 * @param entity The entity instance for which to locate the corresponding entry
 	 * @return The entry
@@ -232,7 +232,7 @@ public interface PersistenceContext {
 	public EntityEntry removeEntry(Object entity);
 
 	/**
-	 * Is there an {@link EntityEntry} registration for this entity instance?
+	 * Is there an {@link StatefulEntityEntry} registration for this entity instance?
 	 *
 	 * @param entity The entity instance for which to check for an entry
 	 *

@@ -59,6 +59,8 @@ import org.hibernate.engine.spi.CachedNaturalIdValueSource;
 import org.hibernate.engine.spi.CollectionEntry;
 import org.hibernate.engine.spi.CollectionKey;
 import org.hibernate.engine.spi.EntityEntry;
+import org.hibernate.engine.spi.SharedEntityEntry;
+import org.hibernate.engine.spi.StatefulEntityEntry;
 import org.hibernate.engine.spi.EntityKey;
 import org.hibernate.engine.spi.EntityUniqueKey;
 import org.hibernate.engine.spi.PersistenceContext;
@@ -489,19 +491,39 @@ public class StatefulPersistenceContext implements PersistenceContext {
 			final boolean disableVersionIncrement,
 			boolean lazyPropertiesAreUnfetched) {
 
-		final EntityEntry e = new EntityEntry(
-				status,
-				loadedState,
-				rowId,
-				id,
-				version,
-				lockMode,
-				existsInDatabase,
-				persister,
-				disableVersionIncrement,
-				lazyPropertiesAreUnfetched,
-				this
-		);
+		final EntityEntry e;
+		//JOH: probably not a great idea, but starter to differentiate between different EntityEntries
+		if(status.equals(org.hibernate.engine.spi.Status.READ_ONLY)){
+			e = new SharedEntityEntry(
+					status,
+					loadedState,
+					rowId,
+					id,
+					version,
+					lockMode,
+					existsInDatabase,
+					persister,
+					disableVersionIncrement,
+					lazyPropertiesAreUnfetched,
+					this
+			);
+
+		}
+		else{
+			e = new StatefulEntityEntry(
+					status,
+					loadedState,
+					rowId,
+					id,
+					version,
+					lockMode,
+					existsInDatabase,
+					persister,
+					disableVersionIncrement,
+					lazyPropertiesAreUnfetched,
+					this
+			);
+		}
 
 		entityEntryContext.addEntityEntry( entity, e );
 //		entityEntries.put(entity, e);

@@ -36,7 +36,7 @@ import org.hibernate.persister.entity.EntityPersister;
 /**
  * We do 2 things here:<ul>
  * <li>Call {@link Lifecycle} interface if necessary</li>
- * <li>Perform needed {@link EntityEntry#getLockMode()} related processing</li>
+ * <li>Perform needed {@link org.hibernate.engine.spi.StatefulEntityEntry#getLockMode()} related processing</li>
  * </ul>
  *
  * @author Gavin King

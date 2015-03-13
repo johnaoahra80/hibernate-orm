@@ -118,7 +118,7 @@ public class EntityEntryTest {
 		oos.flush();
 
 		InputStream is = new ByteArrayInputStream( baos.toByteArray() );
-		EntityEntry deserializedEntry = EntityEntry.deserialize(new ObjectInputStream( is ), getPersistenceContextMock() );
+		EntityEntry deserializedEntry = StatefulEntityEntry.deserialize(new ObjectInputStream(is), getPersistenceContextMock());
 
 		assertEquals( LockMode.OPTIMISTIC, deserializedEntry.getLockMode() );
 		assertEquals( Status.MANAGED, deserializedEntry.getStatus() );
@@ -129,7 +129,7 @@ public class EntityEntryTest {
 
 	private EntityEntry createEntityEntry() {
 
-		return new EntityEntry(
+		return new StatefulEntityEntry(
 				Status.MANAGED,                        // status
 				new Object[]{},                        // loadedState
 				1L,                                    // rowId

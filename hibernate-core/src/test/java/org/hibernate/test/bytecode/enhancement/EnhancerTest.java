@@ -37,12 +37,11 @@ import javassist.CtClass;
 import javassist.CtField;
 import javassist.LoaderClassPath;
 
-import org.hibernate.EntityMode;
 import org.hibernate.LockMode;
 import org.hibernate.bytecode.enhance.spi.EnhancementContext;
 import org.hibernate.bytecode.enhance.spi.Enhancer;
 import org.hibernate.bytecode.enhance.spi.EnhancerConstants;
-import org.hibernate.engine.spi.EntityEntry;
+import org.hibernate.engine.spi.StatefulEntityEntry;
 import org.hibernate.engine.spi.ManagedEntity;
 import org.hibernate.engine.spi.PersistentAttributeInterceptor;
 import org.hibernate.engine.spi.Status;
@@ -164,7 +163,7 @@ public class EnhancerTest extends BaseUnitTestCase {
 
 		// call the new methods
 		//
-		Method setter = entityClass.getMethod( EnhancerConstants.ENTITY_ENTRY_SETTER_NAME, EntityEntry.class );
+		Method setter = entityClass.getMethod( EnhancerConstants.ENTITY_ENTRY_SETTER_NAME, StatefulEntityEntry.class );
 		Method getter = entityClass.getMethod( EnhancerConstants.ENTITY_ENTRY_GETTER_NAME );
 		assertNull( getter.invoke( entityInstance ) );
 		setter.invoke( entityInstance, makeEntityEntry() );
@@ -294,8 +293,8 @@ public class EnhancerTest extends BaseUnitTestCase {
 		);
 	}
 
-	private EntityEntry makeEntityEntry() {
-		return new EntityEntry(
+	private StatefulEntityEntry makeEntityEntry() {
+		return new StatefulEntityEntry(
 				Status.MANAGED,
 				null,
 				null,

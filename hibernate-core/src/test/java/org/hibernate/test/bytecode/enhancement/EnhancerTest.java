@@ -41,6 +41,7 @@ import org.hibernate.LockMode;
 import org.hibernate.bytecode.enhance.spi.EnhancementContext;
 import org.hibernate.bytecode.enhance.spi.Enhancer;
 import org.hibernate.bytecode.enhance.spi.EnhancerConstants;
+import org.hibernate.engine.spi.EntityEntry;
 import org.hibernate.engine.spi.StatefulEntityEntry;
 import org.hibernate.engine.spi.ManagedEntity;
 import org.hibernate.engine.spi.PersistentAttributeInterceptor;
@@ -163,7 +164,7 @@ public class EnhancerTest extends BaseUnitTestCase {
 
 		// call the new methods
 		//
-		Method setter = entityClass.getMethod( EnhancerConstants.ENTITY_ENTRY_SETTER_NAME, StatefulEntityEntry.class );
+		Method setter = entityClass.getMethod( EnhancerConstants.ENTITY_ENTRY_SETTER_NAME, EntityEntry.class );
 		Method getter = entityClass.getMethod( EnhancerConstants.ENTITY_ENTRY_GETTER_NAME );
 		assertNull( getter.invoke( entityInstance ) );
 		setter.invoke( entityInstance, makeEntityEntry() );

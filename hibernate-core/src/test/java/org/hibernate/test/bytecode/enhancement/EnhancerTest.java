@@ -41,8 +41,9 @@ import org.hibernate.LockMode;
 import org.hibernate.bytecode.enhance.spi.EnhancementContext;
 import org.hibernate.bytecode.enhance.spi.Enhancer;
 import org.hibernate.bytecode.enhance.spi.EnhancerConstants;
+import org.hibernate.engine.internal.DefaultEntityEntryFactory;
 import org.hibernate.engine.spi.EntityEntry;
-import org.hibernate.engine.spi.StatefulEntityEntry;
+import org.hibernate.engine.internal.StatefulEntityEntry;
 import org.hibernate.engine.spi.ManagedEntity;
 import org.hibernate.engine.spi.PersistentAttributeInterceptor;
 import org.hibernate.engine.spi.Status;
@@ -294,8 +295,8 @@ public class EnhancerTest extends BaseUnitTestCase {
 		);
 	}
 
-	private StatefulEntityEntry makeEntityEntry() {
-		return new StatefulEntityEntry(
+	private EntityEntry makeEntityEntry() {
+		return new DefaultEntityEntryFactory().createEntityEntry(
 				Status.MANAGED,
 				null,
 				null,

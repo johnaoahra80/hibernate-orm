@@ -30,10 +30,7 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 
 import org.hibernate.LockMode;
-import org.hibernate.SharedSessionBuilder;
 import org.hibernate.engine.spi.EntityEntry;
-import org.hibernate.engine.spi.SharedEntityEntry;
-import org.hibernate.engine.spi.StatefulEntityEntry;
 import org.hibernate.engine.spi.ManagedEntity;
 
 import org.jboss.logging.Logger;

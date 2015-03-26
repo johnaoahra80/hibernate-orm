@@ -59,8 +59,7 @@ import org.hibernate.engine.spi.CachedNaturalIdValueSource;
 import org.hibernate.engine.spi.CollectionEntry;
 import org.hibernate.engine.spi.CollectionKey;
 import org.hibernate.engine.spi.EntityEntry;
-import org.hibernate.engine.spi.SharedEntityEntry;
-import org.hibernate.engine.spi.StatefulEntityEntry;
+import org.hibernate.engine.spi.EntityEntryFactory;
 import org.hibernate.engine.spi.EntityKey;
 import org.hibernate.engine.spi.EntityUniqueKey;
 import org.hibernate.engine.spi.PersistenceContext;
@@ -491,39 +490,21 @@ public class StatefulPersistenceContext implements PersistenceContext {
 			final boolean disableVersionIncrement,
 			boolean lazyPropertiesAreUnfetched) {
 
-		final EntityEntry e;
-		//JOH: probably not a great idea, but starter to differentiate between different EntityEntries
-		if(status.equals(org.hibernate.engine.spi.Status.READ_ONLY)){
-			e = new SharedEntityEntry(
-					status,
-					loadedState,
-					rowId,
-					id,
-					version,
-					lockMode,
-					existsInDatabase,
-					persister,
-					disableVersionIncrement,
-					lazyPropertiesAreUnfetched,
-					this
-			);
+		EntityEntryFactory entityEntryFactory = session.getFactory().getServiceRegistry().getService( EntityEntryFactory.class );
+		final EntityEntry e = entityEntryFactory.createEntityEntry(
+				status,
+				loadedState,
+				rowId,
+				id,
+				version,
+				lockMode,
+				existsInDatabase,
+				persister,
+				disableVersionIncrement,
+				lazyPropertiesAreUnfetched,
+				this
+		);
 
-		}
-		else{
-			e = new StatefulEntityEntry(
-					status,
-					loadedState,
-					rowId,
-					id,
-					version,
-					lockMode,
-					existsInDatabase,
-					persister,
-					disableVersionIncrement,
-					lazyPropertiesAreUnfetched,
-					this
-			);
-		}
 
 		entityEntryContext.addEntityEntry( entity, e );
 //		entityEntries.put(entity, e);
@@ -1887,10 +1868,10 @@ public class StatefulPersistenceContext implements PersistenceContext {
 			persister = locateProperPersister( persister );
 			final Object[] naturalIdValues = getNaturalIdValues( state, persister );
 
-			final Object[] localNaturalIdValues = naturalIdXrefDelegate.removeNaturalIdCrossReference( 
-					persister, 
-					id, 
-					naturalIdValues 
+			final Object[] localNaturalIdValues = naturalIdXrefDelegate.removeNaturalIdCrossReference(
+					persister,
+					id,
+					naturalIdValues
 			);
 
 			return localNaturalIdValues != null ? localNaturalIdValues : naturalIdValues;

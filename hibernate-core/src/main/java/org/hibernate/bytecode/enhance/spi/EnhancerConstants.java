@@ -45,19 +45,19 @@ public class EnhancerConstants {
 	public static final String ENTITY_INSTANCE_GETTER_NAME = "$$_hibernate_getEntityInstance";
 
 	/**
-	 * Name of the field used to hold the {@link org.hibernate.engine.spi.StatefulEntityEntry}
+	 * Name of the field used to hold the {@link org.hibernate.engine.internal.StatefulEntityEntry}
 	 */
 	public static final String ENTITY_ENTRY_FIELD_NAME = "$$_hibernate_entityEntryHolder";
 
 	/**
-	 * Name of the method used to read the {@link org.hibernate.engine.spi.StatefulEntityEntry} field.
+	 * Name of the method used to read the {@link org.hibernate.engine.internal.StatefulEntityEntry} field.
 	 *
 	 * @see #ENTITY_ENTRY_FIELD_NAME
 	 */
 	public static final String ENTITY_ENTRY_GETTER_NAME = "$$_hibernate_getEntityEntry";
 
 	/**
-	 * Name of the method used to write the {@link org.hibernate.engine.spi.StatefulEntityEntry} field.
+	 * Name of the method used to write the {@link org.hibernate.engine.internal.StatefulEntityEntry} field.
 	 *
 	 * @see #ENTITY_ENTRY_FIELD_NAME
 	 */

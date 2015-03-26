@@ -34,6 +34,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 import org.hibernate.LockMode;
+import org.hibernate.engine.internal.StatefulEntityEntry;
 import org.junit.Test;
 
 /**
@@ -118,7 +119,7 @@ public class EntityEntryTest {
 		oos.flush();
 
 		InputStream is = new ByteArrayInputStream( baos.toByteArray() );
-		EntityEntry deserializedEntry = StatefulEntityEntry.deserialize(new ObjectInputStream(is), getPersistenceContextMock());
+		EntityEntry deserializedEntry = StatefulEntityEntry.deserialize( new ObjectInputStream( is ), getPersistenceContextMock() );
 
 		assertEquals( LockMode.OPTIMISTIC, deserializedEntry.getLockMode() );
 		assertEquals( Status.MANAGED, deserializedEntry.getStatus() );

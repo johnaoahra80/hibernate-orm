@@ -21,7 +21,7 @@
  * 51 Franklin Street, Fifth Floor
  * Boston, MA  02110-1301  USA
  */
-package org.hibernate.engine.spi;
+package org.hibernate.engine.internal;
 
 import org.hibernate.AssertionFailure;
 import org.hibernate.CustomEntityDirtinessStrategy;
@@ -30,7 +30,15 @@ import org.hibernate.HibernateException;
 import org.hibernate.LockMode;
 import org.hibernate.Session;
 import org.hibernate.bytecode.instrumentation.spi.FieldInterceptor;
-import org.hibernate.engine.internal.EntityEntryExtraStateHolder;
+import org.hibernate.engine.spi.CachedNaturalIdValueSource;
+import org.hibernate.engine.spi.EntityEntry;
+import org.hibernate.engine.spi.EntityEntryExtraState;
+import org.hibernate.engine.spi.EntityKey;
+import org.hibernate.engine.spi.PersistenceContext;
+import org.hibernate.engine.spi.SelfDirtinessTracker;
+import org.hibernate.engine.spi.SessionFactoryImplementor;
+import org.hibernate.engine.spi.SessionImplementor;
+import org.hibernate.engine.spi.Status;
 import org.hibernate.persister.entity.EntityPersister;
 import org.hibernate.persister.entity.UniqueKeyLoadable;
 import org.hibernate.pretty.MessageHelper;
@@ -78,8 +86,8 @@ public final class SharedEntityEntry implements Serializable, EntityEntry {
 	 *
 	 * 0000 0000 | 0000 0000 | 0654 3333 | 2222 1111
 	 * </pre>
-	 * Use {@link #setCompressedValue(org.hibernate.engine.spi.SharedEntityEntry.EnumState, Enum)},
-	 * {@link #getCompressedValue(org.hibernate.engine.spi.SharedEntityEntry.EnumState, Class)} etc
+	 * Use {@link #setCompressedValue(SharedEntityEntry.EnumState, Enum)},
+	 * {@link #getCompressedValue(SharedEntityEntry.EnumState, Class)} etc
 	 * to access the enums and booleans stored in this value.
 	 * <p>
 	 * Representing enum values by their ordinal value is acceptable for our case as this value itself is never
@@ -313,7 +321,7 @@ public final class SharedEntityEntry implements Serializable, EntityEntry {
 			}
 		}
 
-		if( entity instanceof SelfDirtinessTracker) {
+		if( entity instanceof SelfDirtinessTracker ) {
 			((SelfDirtinessTracker) entity).$$_hibernate_clearDirtyAttributes();
 		}
 

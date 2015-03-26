@@ -62,7 +62,6 @@ import javassist.bytecode.stackmap.MapMaker;
 import org.hibernate.HibernateException;
 import org.hibernate.bytecode.enhance.EnhancementException;
 import org.hibernate.engine.spi.EntityEntry;
-import org.hibernate.engine.spi.StatefulEntityEntry;
 import org.hibernate.engine.spi.ManagedComposite;
 import org.hibernate.engine.spi.ManagedEntity;
 import org.hibernate.engine.spi.PersistentAttributeInterceptable;

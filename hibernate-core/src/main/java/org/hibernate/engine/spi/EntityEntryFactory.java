@@ -1,7 +1,7 @@
 /*
  * Hibernate, Relational Persistence for Idiomatic Java
  *
- * Copyright (c) 2014, Red Hat Inc. or third-party contributors as
+ * Copyright (c) 2015, Red Hat Inc. or third-party contributors as
  * indicated by the @author tags or express copyright attribution
  * statements applied by the authors.  All third-party contributions are
  * distributed under license by Red Hat Inc.
@@ -24,26 +24,32 @@
 
 package org.hibernate.engine.spi;
 
+import java.io.Serializable;
+
+import org.hibernate.LockMode;
+import org.hibernate.persister.entity.EntityPersister;
+import org.hibernate.service.Service;
+
 /**
- * Navigation methods for extra state objects attached to {@link org.hibernate.engine.internal.StatefulEntityEntry}.
+ * Contract to build {@link org.hibernate.engine.spi.EntityEntry}
  *
  * @author Emmanuel Bernard <emmanuel@hibernate.org>
  */
-public interface EntityEntryExtraState {
+public interface EntityEntryFactory extends Service {
 
 	/**
-	 * Attach additional state to the core state of {@link org.hibernate.engine.internal.StatefulEntityEntry}
-	 * <p>
-	 * Implementations must delegate to the next state or add it as next state if last in line.
+	 * Creates {@link org.hibernate.engine.spi.EntityEntry}.
 	 */
-	void addExtraState(EntityEntryExtraState extraState);
-
-	/**
-	 * Retrieve additional state by class type or null if no extra state of that type is present.
-	 * <p>
-	 * Implementations must return self if they match or delegate discovery to the next state in line.
-	 */
-	<T extends EntityEntryExtraState> T getExtraState(Class<T> extraStateType);
-
-	//a remove method is ugly to define and has not real use case that we found: left out
+	EntityEntry createEntityEntry(
+			final Status status,
+			final Object[] loadedState,
+			final Object rowId,
+			final Serializable id,
+			final Object version,
+			final LockMode lockMode,
+			final boolean existsInDatabase,
+			final EntityPersister persister,
+			final boolean disableVersionIncrement,
+			final boolean lazyPropertiesAreUnfetched,
+			final PersistenceContext persistenceContext);
 }

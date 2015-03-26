@@ -27,7 +27,6 @@ import javax.persistence.Id;
 import javax.persistence.Transient;
 
 import org.hibernate.engine.spi.EntityEntry;
-import org.hibernate.engine.spi.StatefulEntityEntry;
 import org.hibernate.engine.spi.ManagedEntity;
 import org.hibernate.engine.spi.PersistentAttributeInterceptable;
 import org.hibernate.engine.spi.PersistentAttributeInterceptor;

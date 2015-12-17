@@ -7,8 +7,8 @@
 package org.hibernate.id.enhanced;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import org.hibernate.HibernateException;
 import org.hibernate.id.IntegralDataTypeHolder;
@@ -93,12 +93,12 @@ public class PooledLoThreadLocalOptimizer extends AbstractOptimizer {
 		}
 	}
 
-	private GenerationState noTenantState;
 	private Map<String, GenerationState> tenantSpecificState;
 	private final ThreadLocal<GenerationState> localAssignedIds = new ThreadLocal<GenerationState>();
 
 	private GenerationState locateGenerationState(String tenantIdentifier) {
 		if ( tenantIdentifier == null ) {
+			GenerationState noTenantState = localAssignedIds.get();
 			if ( noTenantState == null ) {
 				noTenantState = new GenerationState();
 			}
@@ -107,7 +107,7 @@ public class PooledLoThreadLocalOptimizer extends AbstractOptimizer {
 		else {
 			GenerationState state;
 			if ( tenantSpecificState == null ) {
-				tenantSpecificState = new ConcurrentHashMap<String, GenerationState>();
+				tenantSpecificState = new HashMap<String, GenerationState>();
 				state = new GenerationState();
 				tenantSpecificState.put( tenantIdentifier, state );
 			}
@@ -122,13 +122,17 @@ public class PooledLoThreadLocalOptimizer extends AbstractOptimizer {
 		}
 	}
 
+	// for Hibernate testsuite use only
 	private GenerationState noTenantGenerationState() {
+		GenerationState noTenantState = locateGenerationState(null);
+
 		if ( noTenantState == null ) {
 			throw new IllegalStateException( "Could not locate previous generation state for no-tenant" );
 		}
 		return noTenantState;
 	}
 
+	// for Hibernate testsuite use only
 	@Override
 	public IntegralDataTypeHolder getLastSourceValue() {
 		return noTenantGenerationState().lastSourceValue;

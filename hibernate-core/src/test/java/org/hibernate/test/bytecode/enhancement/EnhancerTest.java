@@ -57,6 +57,16 @@ public class EnhancerTest extends BaseUnitTestCase {
 	}
 
 	@Test
+	public void testEviction() {
+		EnhancerTestUtils.runEnhancerTestTask( EvictionTestTask.class );
+	}
+
+	@Test
+	public void testOtherPersistenceContext() {
+		EnhancerTestUtils.runEnhancerTestTask( OtherEntityEntryContextTestTask.class );
+	}
+
+	@Test
 	public void testAssociation() {
 		EnhancerTestUtils.runEnhancerTestTask( OneToOneAssociationTestTask.class );
 		EnhancerTestUtils.runEnhancerTestTask( OneToManyAssociationTestTask.class );

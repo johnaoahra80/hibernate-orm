@@ -1734,4 +1734,22 @@ public interface CoreMessageLogger extends BasicLogger {
 	@Message(value = "Executing import script '%s'", id = 476)
 	void executingImportScript(String scriptName);
 
+	@LogMessage(level = INFO)
+	@Message(value = "Starting delayed drop of schema as part of SessionFactory shut-down'", id = 477)
+	void startingDelayedSchemaDrop();
+
+	@LogMessage(level = ERROR)
+	@Message(value = "Unsuccessful: %s", id = 478)
+	void unsuccessfulSchemaManagementCommand(String command);
+
+	@Message(
+			value = "Collection [%s] was not processed by flush()."
+			+ " This is likely due to unsafe use of the session (e.g. used in multiple threads concurrently, updates during entity lifecycle hooks).",
+			id = 479
+	)
+	String collectionNotProcessedByFlush(String role);
+
+	@LogMessage(level = WARN)
+	@Message(value = "A ManagedEntity was associated with a stale PersistenceContext. A ManagedEntity may only be associated with one PersistenceContext at a time; %s", id = 480)
+	void stalePersistenceContextInEntityEntry(String msg);
 }

@@ -37,7 +37,7 @@ public abstract class AbstractExecutable implements Executable {
 	private EntityManager em;
 
     @Override
-	public final void prepare() {
+	public void prepare() {
 		// make sure we pick up the TCCL, and make sure its the isolated CL...
 		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 		if ( classLoader == null ) {
@@ -79,7 +79,7 @@ public abstract class AbstractExecutable implements Executable {
 	protected void cleanup() {
 	}
 
-	private Map buildSettings() {
+	protected Map buildSettings() {
 		Map<Object, Object> settings = Environment.getProperties();
 		ArrayList<Class> classes = new ArrayList<Class>();
 		classes.addAll( Arrays.asList( getAnnotatedClasses() ) );

@@ -655,7 +655,7 @@ public final class SessionImpl extends AbstractSessionImpl implements EventSourc
 	}
 
 	private <T> EventListenerGroup<T> eventListenerGroup(EventType<T> type) {
-		return factory.getServiceRegistry().getService( EventListenerRegistry.class ).getEventListenerGroup( type );
+		return  factory.getCachedEventListenerRegistry().getEventListenerGroup( type );
 	}
 
 

@@ -206,6 +206,10 @@ public final class SessionFactoryImpl implements SessionFactoryImplementor {
 	private final transient SessionFactoryOptions sessionFactoryOptions;
 	private final transient Map<String, RegionAccessStrategy> cacheAccessStrategiesMap = new HashMap();
 
+	//cached services
+	private transient StatisticsImplementor statisticsImplementor;
+	private transient EventListenerRegistry cachedEventListenerRegistry;
+
 	public SessionFactoryImpl(final MetadataImplementor metadata, SessionFactoryOptions options) {
 		LOG.debug( "Building session factory" );
 
@@ -1170,7 +1174,10 @@ public final class SessionFactoryImpl implements SessionFactoryImplementor {
 	}
 
 	public StatisticsImplementor getStatisticsImplementor() {
-		return serviceRegistry.getService( StatisticsImplementor.class );
+		if(this.statisticsImplementor == null){
+			this.statisticsImplementor = serviceRegistry.getService( StatisticsImplementor.class );
+		}
+		return this.statisticsImplementor;
 	}
 
 	public FilterDefinition getFilterDefinition(String filterName) throws HibernateException {
@@ -1455,6 +1462,13 @@ public final class SessionFactoryImpl implements SessionFactoryImplementor {
 		return getSessionFactoryOptions().getCurrentTenantIdentifierResolver();
 	}
 
+
+	public EventListenerRegistry getCachedEventListenerRegistry(){
+		if (this.cachedEventListenerRegistry == null){
+			this.cachedEventListenerRegistry = this.getServiceRegistry().getService( EventListenerRegistry.class );
+		}
+		return this.cachedEventListenerRegistry;
+	}
 
 	// Serialization handling ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

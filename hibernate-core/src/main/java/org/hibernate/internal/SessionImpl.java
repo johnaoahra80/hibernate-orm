@@ -206,6 +206,7 @@ public final class SessionImpl extends AbstractSessionImpl implements EventSourc
 	private transient ManagedFlushChecker managedFlushChecker;
 	private transient AfterCompletionAction afterCompletionAction;
 	private transient LoadEvent loadEvent; //cached LoadEvent instance
+	private static transient EventListenerRegistry cachedEventListenerRegistry;
 
 	/**
 	 * Constructor used for openSession(...) processing, as well as construction
@@ -655,7 +656,10 @@ public final class SessionImpl extends AbstractSessionImpl implements EventSourc
 	}
 
 	private <T> EventListenerGroup<T> eventListenerGroup(EventType<T> type) {
-		return factory.getServiceRegistry().getService( EventListenerRegistry.class ).getEventListenerGroup( type );
+		if (this.cachedEventListenerRegistry == null){
+			this.cachedEventListenerRegistry = factory.getServiceRegistry().getService( EventListenerRegistry.class );
+		}
+		return  this.cachedEventListenerRegistry.getEventListenerGroup( type );
 	}
 
 

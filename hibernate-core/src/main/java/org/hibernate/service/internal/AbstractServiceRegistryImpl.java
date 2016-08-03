@@ -137,7 +137,6 @@ public abstract class AbstractServiceRegistryImpl
 				continue;
 			}
 			initializeService( serviceBinding );
-			initializedServiceBindingMap.put( serviceBinding.getServiceRole(), serviceBinding );
 		}
 		isInitializationComplete = true;
 	}
@@ -243,6 +242,8 @@ public abstract class AbstractServiceRegistryImpl
 
 		// PHASE 4 : Start service
 		serviceBinding.getLifecycleOwner().startService( serviceBinding );
+
+		initializedServiceBindingMap.put( serviceBinding.getServiceRole(), serviceBinding );
 
 		return service;
 	}

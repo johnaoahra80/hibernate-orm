@@ -80,6 +80,8 @@ public class StandardServiceRegistryImpl extends AbstractServiceRegistryImpl imp
 		for ( ProvidedService providedService : providedServices ) {
 			createServiceBinding( providedService );
 		}
+
+		initializeServices();
 	}
 
 	@Override

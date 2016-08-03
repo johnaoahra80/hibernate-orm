@@ -50,4 +50,9 @@ public class SessionFactoryServiceRegistryImpl extends AbstractServiceRegistryIm
 	public <R extends Service> void configureService(ServiceBinding<R> serviceBinding) {
 		//TODO nothing to do here or should we inject SessionFactory properties?
 	}
+
+	@Override
+	public void initializeServices() {
+		super.initializeServices();
+	}
 }

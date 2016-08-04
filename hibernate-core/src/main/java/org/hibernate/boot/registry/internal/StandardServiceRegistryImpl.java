@@ -15,9 +15,11 @@ import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.service.Service;
 import org.hibernate.service.internal.AbstractServiceRegistryImpl;
 import org.hibernate.service.internal.ProvidedService;
+import org.hibernate.service.internal.StandardSessionFactoryServiceInitiators;
 import org.hibernate.service.spi.Configurable;
 import org.hibernate.service.spi.ServiceBinding;
 import org.hibernate.service.spi.ServiceInitiator;
+import org.hibernate.service.spi.SessionFactoryServiceInitiator;
 
 /**
  * Standard Hibernate implementation of the standard service registry.
@@ -80,6 +82,8 @@ public class StandardServiceRegistryImpl extends AbstractServiceRegistryImpl imp
 		for ( ProvidedService providedService : providedServices ) {
 			createServiceBinding( providedService );
 		}
+
+		initiateAllServices();
 	}
 
 	@Override
@@ -93,5 +97,12 @@ public class StandardServiceRegistryImpl extends AbstractServiceRegistryImpl imp
 		if ( Configurable.class.isInstance( serviceBinding.getService() ) ) {
 			( (Configurable) serviceBinding.getService() ).configure( configurationValues );
 		}
+	}
+
+	private void initiateAllServices(){
+		for ( SessionFactoryServiceInitiator initiator : StandardSessionFactoryServiceInitiators.LIST ) {
+			initiateService( initiator );
+		}
+
 	}
 }

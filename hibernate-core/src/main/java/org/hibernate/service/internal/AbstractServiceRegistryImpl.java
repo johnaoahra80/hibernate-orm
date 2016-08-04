@@ -7,10 +7,13 @@
 package org.hibernate.service.internal;
 
 import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.hibernate.boot.registry.BootstrapServiceRegistry;
@@ -49,11 +52,11 @@ public abstract class AbstractServiceRegistryImpl
 	private final ServiceRegistryImplementor parent;
 	private final boolean allowCrawling;
 
-	private final ConcurrentServiceBinding<Class,ServiceBinding> serviceBindingMap = new ConcurrentServiceBinding<Class,ServiceBinding>();
-	private final ConcurrentServiceBinding<Class,Class> roleXref = new ConcurrentServiceBinding<Class,Class>();
+	private final Map<Class,ServiceBinding> serviceBindingMap = new HashMap<Class,ServiceBinding>();
+	private final Map<Class,Class> roleXref = new HashMap<Class,Class>();
 	// The services stored in initializedServiceByRole are completely initialized
 	// (i.e., configured, dependencies injected, and started)
-	private final ConcurrentServiceBinding<Class,Service> initializedServiceByRole = new ConcurrentServiceBinding<Class, Service>();
+	private final Map<Class,Service> initializedServiceByRole = new HashMap<Class, Service>();
 
 	// IMPL NOTE : the list used for ordered destruction.  Cannot used map above because we need to
 	// iterate it in reverse order which is only available through ListIterator
@@ -112,14 +115,18 @@ public abstract class AbstractServiceRegistryImpl
 	@SuppressWarnings({ "unchecked" })
 	protected <R extends Service> void createServiceBinding(ServiceInitiator<R> initiator) {
 		final ServiceBinding serviceBinding = new ServiceBinding( this, initiator );
-		serviceBindingMap.put( initiator.getServiceInitiated(), serviceBinding );
+		synchronized (serviceBindingMap) {
+			serviceBindingMap.put( initiator.getServiceInitiated(), serviceBinding );
+		}
 	}
 
 	protected <R extends Service> void createServiceBinding(ProvidedService<R> providedService) {
 		ServiceBinding<R> binding = locateServiceBinding( providedService.getServiceRole(), false );
 		if ( binding == null ) {
 			binding = new ServiceBinding<R>( this, providedService.getServiceRole(), providedService.getService() );
-			serviceBindingMap.put( providedService.getServiceRole(), binding );
+			synchronized (serviceBindingMap) {
+				serviceBindingMap.put( providedService.getServiceRole(), binding );
+			}
 		}
 		registerService( binding, providedService.getService() );
 	}
@@ -179,7 +186,9 @@ public abstract class AbstractServiceRegistryImpl
 	}
 
 	private void registerAlternate(Class alternate, Class target) {
-		roleXref.put( alternate, target );
+		synchronized (roleXref) {
+			roleXref.put( alternate, target );
+		}
 	}
 
 	@Override
@@ -207,7 +216,9 @@ public abstract class AbstractServiceRegistryImpl
 				service = initializeService( serviceBinding );
 			}
 			// add the service only after it is completely initialized
-			initializedServiceByRole.put( serviceRole, service );
+			synchronized (initializedServiceByRole) {
+				initializedServiceByRole.put( serviceRole, service );
+			}
 			return service;
 		}
 	}

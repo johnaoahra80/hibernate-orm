@@ -38,6 +38,7 @@ public class SessionFactoryServiceRegistryImpl extends AbstractServiceRegistryIm
 			// create the bindings up front to help identify to which registry services belong
 			createServiceBinding( initiator );
 		}
+		initiateAllServices();
 	}
 
 	@Override
@@ -49,5 +50,12 @@ public class SessionFactoryServiceRegistryImpl extends AbstractServiceRegistryIm
 	@Override
 	public <R extends Service> void configureService(ServiceBinding<R> serviceBinding) {
 		//TODO nothing to do here or should we inject SessionFactory properties?
+	}
+
+	private void initiateAllServices(){
+		for ( SessionFactoryServiceInitiator initiator : StandardSessionFactoryServiceInitiators.LIST ) {
+			initiateService( initiator );
+		}
+
 	}
 }

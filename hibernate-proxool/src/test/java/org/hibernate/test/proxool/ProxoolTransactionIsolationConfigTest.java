@@ -13,17 +13,17 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.AvailableSettings;
 import org.hibernate.engine.jdbc.connections.spi.ConnectionProvider;
 import org.hibernate.proxool.internal.ProxoolConnectionProvider;
-import org.hibernate.service.spi.ServiceRegistryImplementor;
 
 import org.hibernate.testing.common.connections.BaseTransactionIsolationConfigTest;
 import org.junit.Before;
+
+import static org.hibernate.testing.junit4.ExtraAssertions.assertTyping;
 
 /**
  * @author Steve Ebersole
  */
 public class ProxoolTransactionIsolationConfigTest extends BaseTransactionIsolationConfigTest {
 	private Properties properties;
-	private StandardServiceRegistry ssr;
 
 	@Before
 	public void setUp() {
@@ -32,17 +32,19 @@ public class ProxoolTransactionIsolationConfigTest extends BaseTransactionIsolat
 		properties = new Properties();
 		properties.put( AvailableSettings.PROXOOL_POOL_ALIAS, poolName );
 		properties.put( AvailableSettings.PROXOOL_PROPERTIES, poolName + ".properties" );
-
-		ssr = new StandardServiceRegistryBuilder()
-				.applySettings( properties )
-				.build();
 	}
 
 	@Override
-	protected ConnectionProvider getConnectionProviderUnderTest() {
-		ProxoolConnectionProvider provider = new ProxoolConnectionProvider();
-		provider.injectServices( (ServiceRegistryImplementor) ssr );
-		return provider;
+	protected ConnectionProvider getConnectionProviderUnderTest(Properties allProperties) {
+		StandardServiceRegistry ssr = new StandardServiceRegistryBuilder()
+				.applySettings( allProperties )
+				.build();
+		return ssr.getService( ConnectionProvider.class );
+	}
+
+	@Override
+	protected void assertCorrectConnectionProviderClass(ConnectionProvider connectionProvider) {
+		assertTyping( ProxoolConnectionProvider.class, connectionProvider );
 	}
 
 	@Override

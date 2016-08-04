@@ -6,11 +6,15 @@
  */
 package org.hibernate.connection;
 
+import java.util.Properties;
+
 import org.hibernate.engine.jdbc.connections.internal.DriverManagerConnectionProviderImpl;
 import org.hibernate.engine.jdbc.connections.spi.ConnectionProvider;
 
 import org.hibernate.testing.common.connections.BaseTransactionIsolationConfigTest;
 import org.junit.Ignore;
+
+import static org.hibernate.testing.junit4.ExtraAssertions.assertTyping;
 
 /**
  * NOTE : had to mark this as ignored because otherwise many other of the hibernate-core tests ran into problems.
@@ -22,7 +26,7 @@ import org.junit.Ignore;
 @Ignore
 public class DriverManagerConnectionProviderTransactionIsolationConfigTest extends BaseTransactionIsolationConfigTest {
 	@Override
-	protected ConnectionProvider getConnectionProviderUnderTest() {
-		return new DriverManagerConnectionProviderImpl();
+	protected void assertCorrectConnectionProviderClass(ConnectionProvider connectionProvider) {
+		assertTyping( DriverManagerConnectionProviderImpl.class, connectionProvider );
 	}
 }

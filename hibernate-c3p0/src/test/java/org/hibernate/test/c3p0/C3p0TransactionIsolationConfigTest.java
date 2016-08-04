@@ -15,21 +15,14 @@ import org.hibernate.service.spi.ServiceRegistryImplementor;
 import org.hibernate.testing.common.connections.BaseTransactionIsolationConfigTest;
 import org.junit.Before;
 
+import static org.hibernate.testing.junit4.ExtraAssertions.assertTyping;
+
 /**
  * @author Steve Ebersole
  */
 public class C3p0TransactionIsolationConfigTest extends BaseTransactionIsolationConfigTest {
-	private StandardServiceRegistry ssr;
-
-	@Before
-	public void setUp() {
-		ssr = new StandardServiceRegistryBuilder().build();
-	}
-
 	@Override
-	protected ConnectionProvider getConnectionProviderUnderTest() {
-		C3P0ConnectionProvider provider = new C3P0ConnectionProvider();
-		provider.injectServices( (ServiceRegistryImplementor) ssr );
-		return provider;
+	protected void assertCorrectConnectionProviderClass(ConnectionProvider connectionProvider) {
+		assertTyping( C3P0ConnectionProvider.class, connectionProvider );
 	}
 }

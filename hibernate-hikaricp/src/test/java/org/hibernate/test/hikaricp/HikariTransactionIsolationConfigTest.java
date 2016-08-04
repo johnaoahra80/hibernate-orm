@@ -11,12 +11,16 @@ import org.hibernate.hikaricp.internal.HikariCPConnectionProvider;
 
 import org.hibernate.testing.common.connections.BaseTransactionIsolationConfigTest;
 
+import static org.hibernate.testing.junit4.ExtraAssertions.assertTyping;
+
 /**
  * @author Steve Ebersole
  */
 public class HikariTransactionIsolationConfigTest extends BaseTransactionIsolationConfigTest {
+
 	@Override
-	protected ConnectionProvider getConnectionProviderUnderTest() {
-		return new HikariCPConnectionProvider();
+	protected void assertCorrectConnectionProviderClass(ConnectionProvider connectionProvider) {
+		assertTyping( HikariCPConnectionProvider.class, connectionProvider );
 	}
+
 }

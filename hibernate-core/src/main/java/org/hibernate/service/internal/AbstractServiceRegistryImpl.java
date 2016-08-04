@@ -195,6 +195,15 @@ public abstract class AbstractServiceRegistryImpl
 		return null;
 	}
 
+	@SuppressWarnings({ "unchecked" })
+	protected final <R extends Service> ServiceBinding<R> locateInitializedServiceBinding(Class<R> serviceRole) {
+		ServiceBinding initializedServiceBinding = initializedServiceBindingMap.get( serviceRole );
+		if ( initializedServiceBinding != null ) {
+			return initializedServiceBinding;
+		}
+		return parent != null ? parent.locateServiceBinding( serviceRole ) : null;
+	}
+
 	private void registerAlternate(Class alternate, Class target) {
 		roleXref.put( alternate, target );
 	}
@@ -203,17 +212,23 @@ public abstract class AbstractServiceRegistryImpl
 	@SuppressWarnings( {"unchecked"})
 	public <R extends Service> R getService(Class<R> serviceRole) {
 		// TODO: should an exception be thrown if active == false???
-		ServiceBinding<R> serviceBinding = locateServiceBinding( serviceRole );
-		if ( serviceBinding.getService() != null ) {
-			return serviceBinding.getService();
-		}
-
 		if ( isInitializationComplete ) {
-			throw new UnknownServiceException( serviceRole );
+			ServiceBinding<R> serviceBinding = locateInitializedServiceBinding( serviceRole );
+			if ( serviceBinding.getService() != null ) {
+				return serviceBinding.getService();
+			}
+			else {
+				throw new UnknownServiceException( serviceRole );
+			}
 		}
-
-		// we are still in the process of initializing services
-		return initializeService( serviceBinding );
+		else {
+			// we are still in the process of initializing services
+			ServiceBinding<R> serviceBinding = locateServiceBinding( serviceRole );
+			if ( serviceBinding.getService() != null ) {
+				return serviceBinding.getService();
+			}
+			return initializeService( serviceBinding );
+		}
 	}
 
 	protected <R extends Service> void registerService(ServiceBinding<R> serviceBinding, R service) {

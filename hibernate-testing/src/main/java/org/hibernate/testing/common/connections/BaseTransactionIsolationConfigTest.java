@@ -9,11 +9,11 @@ package org.hibernate.testing.common.connections;
 import java.sql.Connection;
 import java.util.Properties;
 
+import org.hibernate.boot.registry.StandardServiceRegistry;
+import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.AvailableSettings;
 import org.hibernate.cfg.Environment;
 import org.hibernate.engine.jdbc.connections.spi.ConnectionProvider;
-import org.hibernate.service.spi.Configurable;
-import org.hibernate.service.spi.Startable;
 import org.hibernate.service.spi.Stoppable;
 
 import org.hibernate.testing.junit4.BaseUnitTestCase;
@@ -25,7 +25,8 @@ import static org.junit.Assert.assertEquals;
  * @author Steve Ebersole
  */
 public abstract class BaseTransactionIsolationConfigTest extends BaseUnitTestCase {
-	protected abstract ConnectionProvider getConnectionProviderUnderTest();
+
+	protected abstract void assertCorrectConnectionProviderClass(ConnectionProvider connectionProvider);
 
 	protected void augmentConfigurationSettings(Properties properties) {
 	}
@@ -36,14 +37,14 @@ public abstract class BaseTransactionIsolationConfigTest extends BaseUnitTestCas
 		augmentConfigurationSettings( properties );
 		properties.put( AvailableSettings.ISOLATION, Connection.TRANSACTION_SERIALIZABLE );
 
-		ConnectionProvider provider = getConnectionProviderUnderTest();
+		ConnectionProvider provider = getConnectionProviderUnderTest( properties );
 
 		try {
-			( (Configurable) provider ).configure( properties );
+			//( (Configurable) provider ).configure( properties );
 
-			if ( Startable.class.isInstance( provider ) ) {
-				( (Startable) provider ).start();
-			}
+			//if ( Startable.class.isInstance( provider ) ) {
+			//	( (Startable) provider ).start();
+			//}
 
 			Connection connection = provider.getConnection();
 			assertEquals( Connection.TRANSACTION_SERIALIZABLE, connection.getTransactionIsolation() );
@@ -60,14 +61,14 @@ public abstract class BaseTransactionIsolationConfigTest extends BaseUnitTestCas
 		augmentConfigurationSettings( properties );
 		properties.put( AvailableSettings.ISOLATION, Integer.toString( Connection.TRANSACTION_SERIALIZABLE ) );
 
-		ConnectionProvider provider = getConnectionProviderUnderTest();
+		ConnectionProvider provider = getConnectionProviderUnderTest( properties );
 
 		try {
-			( (Configurable) provider ).configure( properties );
+			//( (Configurable) provider ).configure( properties );
 
-			if ( Startable.class.isInstance( provider ) ) {
-				( (Startable) provider ).start();
-			}
+			//if ( Startable.class.isInstance( provider ) ) {
+			//	( (Startable) provider ).start();
+			//}
 
 			Connection connection = provider.getConnection();
 			assertEquals( Connection.TRANSACTION_SERIALIZABLE, connection.getTransactionIsolation() );
@@ -84,14 +85,15 @@ public abstract class BaseTransactionIsolationConfigTest extends BaseUnitTestCas
 		augmentConfigurationSettings( properties );
 		properties.put( AvailableSettings.ISOLATION, "TRANSACTION_SERIALIZABLE" );
 
-		ConnectionProvider provider = getConnectionProviderUnderTest();
+		ConnectionProvider provider = getConnectionProviderUnderTest( properties );
+
 
 		try {
-			( (Configurable) provider ).configure( properties );
+			//( (Configurable) provider ).configure( properties );
 
-			if ( Startable.class.isInstance( provider ) ) {
-				( (Startable) provider ).start();
-			}
+			//if ( Startable.class.isInstance( provider ) ) {
+			//	( (Startable) provider ).start();
+			//}
 
 			Connection connection = provider.getConnection();
 			assertEquals( Connection.TRANSACTION_SERIALIZABLE, connection.getTransactionIsolation() );
@@ -108,14 +110,14 @@ public abstract class BaseTransactionIsolationConfigTest extends BaseUnitTestCas
 		augmentConfigurationSettings( properties );
 		properties.put( AvailableSettings.ISOLATION, "SERIALIZABLE" );
 
-		ConnectionProvider provider = getConnectionProviderUnderTest();
+		ConnectionProvider provider = getConnectionProviderUnderTest( properties );
 
 		try {
-			( (Configurable) provider ).configure( properties );
+			//( (Configurable) provider ).configure( properties );
 
-			if ( Startable.class.isInstance( provider ) ) {
-				( (Startable) provider ).start();
-			}
+			//if ( Startable.class.isInstance( provider ) ) {
+			//	( (Startable) provider ).start();
+			//}
 
 			Connection connection = provider.getConnection();
 			assertEquals( Connection.TRANSACTION_SERIALIZABLE, connection.getTransactionIsolation() );
@@ -124,5 +126,14 @@ public abstract class BaseTransactionIsolationConfigTest extends BaseUnitTestCas
 		finally {
 			( (Stoppable) provider ).stop();
 		}
+	}
+
+	protected ConnectionProvider getConnectionProviderUnderTest(Properties allProperties) {
+		final StandardServiceRegistry ssr = new StandardServiceRegistryBuilder()
+				.applySettings( allProperties )
+				.build();
+		final ConnectionProvider connectionProvider = ssr.getService( ConnectionProvider.class );
+		assertCorrectConnectionProviderClass( connectionProvider );
+		return connectionProvider;
 	}
 }

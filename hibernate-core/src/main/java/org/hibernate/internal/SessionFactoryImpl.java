@@ -29,6 +29,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import org.hibernate.cache.spi.access.RegionAccessStrategy;
+import org.hibernate.engine.internal.ImmutableManagedEntityHolderFactory;
+import org.hibernate.engine.internal.StandardImmutableManagedEntityHolderFactory;
 import org.jboss.logging.Logger;
 
 import org.hibernate.AssertionFailure;
@@ -207,6 +209,8 @@ public final class SessionFactoryImpl implements SessionFactoryImplementor {
 	private final transient Map<String, RegionAccessStrategy> cacheAccessStrategiesMap = new HashMap();
 
 	private transient StatisticsImplementor statisticsImplementor;
+
+	private transient ImmutableManagedEntityHolderFactory immutableManagedEntityHolderFactory;
 
 	public SessionFactoryImpl(final MetadataImplementor metadata, SessionFactoryOptions options) {
 		LOG.debug( "Building session factory" );
@@ -423,6 +427,9 @@ public final class SessionFactoryImpl implements SessionFactoryImplementor {
 				}
 				roles.add( persister.getRole() );
 			}
+
+			//immutableManagedEntityHolderFactory
+			immutableManagedEntityHolderFactory = new ImmutableManagedEntityHolderFactory();
 		}
 
 		this.collectionMetadata = Collections.unmodifiableMap( tmpCollectionMetadata );
@@ -819,6 +826,11 @@ public final class SessionFactoryImpl implements SessionFactoryImplementor {
 				return (SessionFactoryImplementor) SessionFactoryRegistry.INSTANCE.findSessionFactory( uuid, name );
 			}
 		};
+	}
+
+	@Override
+	public ImmutableManagedEntityHolderFactory getImmutableManagedEntityHolderFactory() {
+		return this.immutableManagedEntityHolderFactory;
 	}
 
 	@Override

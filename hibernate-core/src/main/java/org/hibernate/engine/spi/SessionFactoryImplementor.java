@@ -28,6 +28,7 @@ import org.hibernate.context.spi.CurrentTenantIdentifierResolver;
 import org.hibernate.dialect.Dialect;
 import org.hibernate.dialect.function.SQLFunctionRegistry;
 import org.hibernate.engine.ResultSetMappingDefinition;
+import org.hibernate.engine.internal.ImmutableManagedEntityHolderFactory;
 import org.hibernate.engine.jdbc.spi.JdbcServices;
 import org.hibernate.engine.jdbc.spi.SqlExceptionHelper;
 import org.hibernate.engine.profile.FetchProfile;
@@ -327,4 +328,6 @@ public interface SessionFactoryImplementor extends Mapping, SessionFactory {
 	}
 
 	DeserializationResolver getDeserializationResolver();
+
+	ImmutableManagedEntityHolderFactory getImmutableManagedEntityHolderFactory();
 }

@@ -54,6 +54,9 @@ ext {
             slf4j_api:                 "org.slf4j:slf4j-api:1.7.5",
             slf4j_log4j:               "org.slf4j:slf4j-log4j12:1.7.5",
 
+            // pooling
+            stormpot:       'com.github.chrisvest:stormpot:2.4.1',
+
             // jaxb task
 			jaxb:           'com.sun.xml.bind:jaxb-xjc:2.2.5',
 			jaxb2_basics:   'org.jvnet.jaxb2_commons:jaxb2-basics:0.6.3',

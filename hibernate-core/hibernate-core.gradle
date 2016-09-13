@@ -16,6 +16,7 @@ dependencies {
     compile( libraries.antlr )
     compile( libraries.jta )
     compile( libraries.jandex )
+    compile( libraries.stormpot )
 
     // We need dom4j for a number of things temporarily:
     //      1) (unsupported) EntityMode.DOM4J support

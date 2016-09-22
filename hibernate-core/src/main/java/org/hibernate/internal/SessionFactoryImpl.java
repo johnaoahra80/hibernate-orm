@@ -830,6 +830,9 @@ public final class SessionFactoryImpl implements SessionFactoryImplementor {
 
 	@Override
 	public ImmutableManagedEntityHolderFactory getImmutableManagedEntityHolderFactory() {
+		if (this.immutableManagedEntityHolderFactory == null) {
+			immutableManagedEntityHolderFactory = new ImmutableManagedEntityHolderFactory();
+		}
 		return this.immutableManagedEntityHolderFactory;
 	}
 

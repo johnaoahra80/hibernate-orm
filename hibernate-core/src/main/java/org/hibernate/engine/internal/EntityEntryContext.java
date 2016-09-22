@@ -8,10 +8,13 @@ package org.hibernate.engine.internal;
 
 import org.hibernate.HibernateException;
 import org.hibernate.LockMode;
+import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.classloading.spi.ClassLoaderService;
 import org.hibernate.engine.spi.EntityEntry;
 import org.hibernate.engine.spi.ManagedEntity;
 import org.hibernate.engine.spi.PersistenceContext;
+import org.hibernate.engine.spi.SessionFactoryImplementor;
+import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.internal.CoreLogging;
 import org.hibernate.internal.CoreMessageLogger;
 
@@ -100,7 +103,17 @@ public class EntityEntryContext {
 				}
 				else {
 					// Create a holder for PersistenceContext-related data.
-					managedEntity =  this.persistenceContext.getSession().getFactory().getImmutableManagedEntityHolderFactory().getManagedEntityHolder((ManagedEntity) entity);
+					SessionImplementor session = this.persistenceContext.getSession();
+					SessionFactoryImplementor factory = session.getFactory();
+					ImmutableManagedEntityHolderFactory managedEntityHolderFactory = factory.getImmutableManagedEntityHolderFactory();
+					try {
+						managedEntity =  managedEntityHolderFactory.getManagedEntityHolder((ManagedEntity) entity);
+					} catch (ManagedEntityHolderAllocationFailureException e) {
+						System.err.println( "Allocation failed" );
+						e.printStackTrace();
+					}
+
+					assert managedEntity != null;
 					if ( immutableManagedEntityXref == null ) {
 						immutableManagedEntityXref = new IdentityHashMap<ManagedEntity, ImmutableManagedEntityHolder>();
 					}
@@ -119,7 +132,7 @@ public class EntityEntryContext {
 			}
 		}
 
-		// associate the EntityEntry with the entity
+			// associate the EntityEntry with the entity
 		managedEntity.$$_hibernate_setEntityEntry( entityEntry );
 
 		if ( alreadyAssociated ) {

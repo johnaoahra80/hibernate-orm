@@ -22,26 +22,38 @@ public class ImmutableManagedEntityHolderFactory {
 		initialize();
 	}
 
-	private void initialize(){
+	private void initialize() {
 
 		//todo add to hibernate settings
 		String poolSizeProperty = System.getProperty( "org.hibernate.immutableManagedEntityHolderPoolSize" );
-		Integer poolSize = 10;
-		if( poolSizeProperty != null ){
+		Integer poolSize = 1000;
+		if ( poolSizeProperty != null ) {
 			poolSize = Integer.parseInt( poolSizeProperty );
 		}
 
 		allocator = new PoolableImmutableManagedEntityAllocator();
-		config = new Config<PoolableImmutableManagedEntityHolder>().setAllocator(allocator);
+		config = new Config<PoolableImmutableManagedEntityHolder>().setAllocator( allocator );
 		config.setSize( poolSize );
-		pool = new BlazePool<PoolableImmutableManagedEntityHolder>(config);
-		timeout = new Timeout(1, TimeUnit.SECONDS);
+		pool = new BlazePool<PoolableImmutableManagedEntityHolder>( config );
+		timeout = new Timeout( 1, TimeUnit.SECONDS );
 
 	}
 
-	public ImmutableManagedEntityHolder getManagedEntityHolder(ManagedEntity entity){
+	public ImmutableManagedEntityHolder getManagedEntityHolder(ManagedEntity entity) throws ManagedEntityHolderAllocationFailureException {
 		try {
-			return  pool.claim(timeout);
+
+			System.out.println("Allocation count: " + ((BlazePool) pool).getAllocationCount() );
+			PoolableImmutableManagedEntityHolder poolableImmutableManagedEntityHolder = pool.claim( timeout );
+			if(poolableImmutableManagedEntityHolder != null) {
+				poolableImmutableManagedEntityHolder.managedEntity = entity;
+
+				return poolableImmutableManagedEntityHolder;
+			}
+			else {
+
+				throw new ManagedEntityHolderAllocationFailureException();
+
+			}
 		} catch (InterruptedException e) {
 			//todo throw appropriate Exception
 			e.printStackTrace();
@@ -49,8 +61,8 @@ public class ImmutableManagedEntityHolderFactory {
 		return null;
 	}
 
-	public void releaseImmutableEntityHolder(ImmutableManagedEntityHolder entity){
-		if( entity != null && entity instanceof PoolableImmutableManagedEntityHolder) {
+	public void releaseImmutableEntityHolder(ImmutableManagedEntityHolder entity) {
+		if ( entity != null && entity instanceof PoolableImmutableManagedEntityHolder ) {
 			((PoolableImmutableManagedEntityHolder) entity).release();
 		}
 	}

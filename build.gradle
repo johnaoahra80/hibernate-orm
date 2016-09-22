@@ -188,6 +188,17 @@ subprojects { subProject ->
 		systemProperties['hibernate.test.validatefailureexpected'] = true
 		systemProperties += System.properties.findAll { it.key.startsWith( "hibernate.") }
 
+//		jvmArgs "-XX:+UnlockCommercialFeatures",
+//				"-XX:+FlightRecorder",
+//				"-XX:StartFlightRecording=compress=false,duration=24h,filename=/tmp/flight_record.jfr",
+//		        "-Xdebug",
+//				"-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005"
+
+		jvmArgs "-Xdebug",
+				"-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005"
+
+//				"-XX:StartFlightRecording=compress=false,duration=24h,filename=/tmp/flight_record.jfr,settings=/opt/jdk1.8.0_92/jre/lib/jfr/profile.jfc"
+
 //		beforeTest { descriptor ->
 //			println "Starting test: " + descriptor
 //		}

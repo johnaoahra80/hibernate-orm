@@ -263,6 +263,9 @@ public class EntityEntryContext {
 		if ( ImmutableManagedEntityHolder.class.isInstance( managedEntity ) ) {
 			assert entity == ( (ImmutableManagedEntityHolder) managedEntity ).getManagedEntity();
 			immutableManagedEntityXref.remove( (ManagedEntity) entity );
+//			if(PoolableImmutableManagedEntityHolder.class.isInstance( managedEntity )){
+//				((PoolableImmutableManagedEntityHolder) managedEntity).release();
+//			}
 
 		}
 		else if ( !ManagedEntity.class.isInstance( entity ) ) {
@@ -353,6 +356,9 @@ public class EntityEntryContext {
 			node.$$_hibernate_setPreviousManagedEntity( null );
 			node.$$_hibernate_setNextManagedEntity( null );
 
+			if( PoolableImmutableManagedEntityHolder.class.isInstance( node )){
+				((PoolableImmutableManagedEntityHolder)node).release();
+			}
 			node = nextNode;
 		}
 

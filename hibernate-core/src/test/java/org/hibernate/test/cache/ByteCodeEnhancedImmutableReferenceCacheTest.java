@@ -15,11 +15,14 @@ import org.hibernate.cfg.AvailableSettings;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.engine.spi.EntityEntry;
 import org.hibernate.engine.spi.ManagedEntity;
+import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.engine.spi.Status;
 import org.hibernate.persister.entity.EntityPersister;
 import org.hibernate.testing.TestForIssue;
 import org.hibernate.testing.junit4.BaseCoreFunctionalTestCase;
+import org.hibernate.testing.junit4.BaseUnitTestCase;
+import org.jboss.logging.Logger;
 import org.junit.Test;
 
 import javax.persistence.Cacheable;
@@ -38,6 +41,8 @@ import static org.junit.Assert.assertTrue;
  * @author John O'Hara
  */
 public class ByteCodeEnhancedImmutableReferenceCacheTest extends BaseCoreFunctionalTestCase {
+	private static final Logger log = Logger.getLogger( ByteCodeEnhancedImmutableReferenceCacheTest.class );
+
 	@Override
 	protected void configure(Configuration configuration) {
 		super.configure( configuration );
@@ -61,10 +66,16 @@ public class ByteCodeEnhancedImmutableReferenceCacheTest extends BaseCoreFunctio
 
 		// save a reference in one session
 		Session s = openSession();
+//		log.info( "Live Count: "  + ((SessionFactoryImplementor) s.getSessionFactory()).getImmutableManagedEntityHolderFactory().getAvailablePoolSize());
+//		assertEquals (0l, ((SessionFactoryImplementor) s.getSessionFactory()).getImmutableManagedEntityHolderFactory().getAvailablePoolSize());
 		s.beginTransaction();
 		s.save( myReferenceData );
+//		log.info( "Live Count: "  + ((SessionFactoryImplementor) s.getSessionFactory()).getImmutableManagedEntityHolderFactory().getAvailablePoolSize());
+//		assertEquals (999l, ((SessionFactoryImplementor) s.getSessionFactory()).getImmutableManagedEntityHolderFactory().getAvailablePoolSize());
 		s.getTransaction().commit();
 		s.close();
+//		log.info( "Live Count: "  + ((SessionFactoryImplementor) s.getSessionFactory()).getImmutableManagedEntityHolderFactory().getAvailablePoolSize());
+//		assertEquals (1000l, ((SessionFactoryImplementor) s.getSessionFactory()).getImmutableManagedEntityHolderFactory().getAvailablePoolSize());
 
 		assertNotNull( myReferenceData.$$_hibernate_getEntityEntry() );
 

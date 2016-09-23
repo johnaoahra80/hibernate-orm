@@ -66,4 +66,9 @@ public class ImmutableManagedEntityHolderFactory {
 			((PoolableImmutableManagedEntityHolder) entity).release();
 		}
 	}
+
+	public long getAvailablePoolSize(){
+		return ((BlazePool) pool).getLiveCount();
+	}
+
 }

@@ -42,7 +42,7 @@ public class ImmutableManagedEntityHolderFactory {
 	public ImmutableManagedEntityHolder getManagedEntityHolder(ManagedEntity entity) throws ManagedEntityHolderAllocationFailureException {
 		try {
 
-			System.out.println("Allocation count: " + ((BlazePool) pool).getAllocationCount() );
+//			System.out.println("Allocation count: " + ((BlazePool) pool).getAllocationCount() );
 			PoolableImmutableManagedEntityHolder poolableImmutableManagedEntityHolder = pool.claim( timeout );
 			if(poolableImmutableManagedEntityHolder != null) {
 				poolableImmutableManagedEntityHolder.managedEntity = entity;

@@ -37,6 +37,8 @@ public class ImmutableManagedEntityHolderFactory {
 		pool = new BlazePool<PoolableImmutableManagedEntityHolder>( config );
 		timeout = new Timeout( 1, TimeUnit.SECONDS );
 
+		Thread.currentThread().dumpStack();
+
 	}
 
 	public ImmutableManagedEntityHolder getManagedEntityHolder(ManagedEntity entity) throws ManagedEntityHolderAllocationFailureException {
@@ -71,4 +73,14 @@ public class ImmutableManagedEntityHolderFactory {
 		return ((BlazePool) pool).getLiveCount();
 	}
 
+
+	public void tearDownPool(){
+
+		System.out.println("Shutting down stormpot pool");
+
+		pool.shutdown();
+
+//		allocator = null;
+//		pool = null;
+	}
 }

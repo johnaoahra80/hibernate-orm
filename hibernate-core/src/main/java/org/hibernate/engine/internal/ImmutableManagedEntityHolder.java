@@ -17,9 +17,9 @@ import org.hibernate.engine.spi.ManagedEntity;
  * @author John O'Hara
  */
 public class ImmutableManagedEntityHolder implements ManagedEntity{
-	protected ManagedEntity managedEntity;
-	protected ManagedEntity previous;
-	protected ManagedEntity next;
+	protected volatile ManagedEntity managedEntity;
+	protected volatile ManagedEntity previous;
+	protected volatile ManagedEntity next;
 
 	public ImmutableManagedEntityHolder(ManagedEntity immutableManagedEntity) {
 		this.managedEntity = immutableManagedEntity;

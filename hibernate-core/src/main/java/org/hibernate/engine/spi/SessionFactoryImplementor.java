@@ -97,7 +97,7 @@ public interface SessionFactoryImplementor extends Mapping, SessionFactory {
 	CollectionPersister getCollectionPersister(String role) throws MappingException;
 
 	/**
-	 * Get all collection persisters as a Map, which collection role as the key and the persister is the value.
+	 * Get all collection per0isters as a Map, which collection role as the key and the persister is the value.
 	 *
 	 * @return The Map contains all collection persisters.
 	 */

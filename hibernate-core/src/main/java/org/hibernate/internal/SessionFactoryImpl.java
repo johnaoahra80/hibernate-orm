@@ -275,6 +275,7 @@ public final class SessionFactoryImpl implements SessionFactoryImplementor {
 				for ( Integrator integrator : integrators ) {
 					integrator.disintegrate( SessionFactoryImpl.this, SessionFactoryImpl.this.serviceRegistry );
 				}
+
 				integrators.clear();
 			}
 		}
@@ -1087,6 +1088,9 @@ public final class SessionFactoryImpl implements SessionFactoryImplementor {
 				p.getCacheAccessStrategy().getRegion().destroy();
 			}
 		}
+
+		immutableManagedEntityHolderFactory.tearDownPool();
+
 
 		cacheAccess.close();
 

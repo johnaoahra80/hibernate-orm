@@ -70,7 +70,7 @@ public class PersistenceUnitUtilImpl implements PersistenceUnitUtil, Serializabl
 			return ((HibernateProxy) entity).getHibernateLazyInitializer().getIdentifier();
 		}
 		else if ( entity instanceof ManagedEntity ) {
-			EntityEntry entityEntry = ((ManagedEntity) entity).$$_hibernate_getEntityEntry();
+			EntityEntry entityEntry = ((ManagedEntity) entity).$$_hibernate_getEntityEntry( null );
 			if ( entityEntry != null ) {
 				return entityEntry.getId();
 			}

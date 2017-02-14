@@ -6,6 +6,9 @@
  */
 package org.hibernate.engine.spi;
 
+import org.hibernate.Session;
+import org.hibernate.SharedSessionContract;
+
 /**
  * Specialized {@link Managed} contract for entity classes.  Essentially provides access to information
  * about an instance's association to a Session/EntityManager.  Specific information includes:<ul>
@@ -29,7 +32,7 @@ public interface ManagedEntity extends Managed {
 	 *
 	 * @return The entity instance.
 	 */
-	public Object $$_hibernate_getEntityInstance();
+	public Object $$_hibernate_getEntityInstance(SharedSessionContract session);
 
 	/**
 	 * Provides access to the associated EntityEntry.
@@ -38,7 +41,7 @@ public interface ManagedEntity extends Managed {
 	 *
 	 * @see #$$_hibernate_setEntityEntry
 	 */
-	public EntityEntry $$_hibernate_getEntityEntry();
+	public EntityEntry $$_hibernate_getEntityEntry(SharedSessionContract session);
 
 	/**
 	 * Injects the EntityEntry associated with this entity instance.  The EntityEntry represents state associated
@@ -46,7 +49,7 @@ public interface ManagedEntity extends Managed {
 	 *
 	 * @param entityEntry The EntityEntry associated with this entity instance.
 	 */
-	public void $$_hibernate_setEntityEntry(EntityEntry entityEntry);
+	public void $$_hibernate_setEntityEntry(SharedSessionContract session, EntityEntry entityEntry);
 
 	/**
 	 * Part of entry linking; obtain reference to the previous entry.  Can be {@code null}, which should indicate
@@ -54,7 +57,7 @@ public interface ManagedEntity extends Managed {
 	 *
 	 * @return The previous entry
 	 */
-	public ManagedEntity $$_hibernate_getPreviousManagedEntity();
+	public ManagedEntity $$_hibernate_getPreviousManagedEntity(SharedSessionContract session);
 
 	/**
 	 * Part of entry linking; sets the previous entry.  Again, can be {@code null}, which should indicate
@@ -62,7 +65,7 @@ public interface ManagedEntity extends Managed {
 	 *
 	 * @param previous The previous entry
 	 */
-	public void $$_hibernate_setPreviousManagedEntity(ManagedEntity previous);
+	public void $$_hibernate_setPreviousManagedEntity(SharedSessionContract session, ManagedEntity previous);
 
 	/**
 	 * Part of entry linking; obtain reference to the next entry.  Can be {@code null}, which should indicate
@@ -70,7 +73,7 @@ public interface ManagedEntity extends Managed {
 	 *
 	 * @return The next entry
 	 */
-	public ManagedEntity $$_hibernate_getNextManagedEntity();
+	public ManagedEntity $$_hibernate_getNextManagedEntity(SharedSessionContract session);
 
 	/**
 	 * Part of entry linking; sets the next entry.  Again, can be {@code null}, which should indicate
@@ -78,5 +81,5 @@ public interface ManagedEntity extends Managed {
 	 *
 	 * @param next The next entry
 	 */
-	public void $$_hibernate_setNextManagedEntity(ManagedEntity next);
+	public void $$_hibernate_setNextManagedEntity(SharedSessionContract session, ManagedEntity next);
 }

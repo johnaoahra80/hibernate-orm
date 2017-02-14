@@ -29,6 +29,7 @@ import org.hibernate.LockMode;
 import org.hibernate.MappingException;
 import org.hibernate.NonUniqueObjectException;
 import org.hibernate.PersistentObjectException;
+import org.hibernate.Session;
 import org.hibernate.TransientObjectException;
 import org.hibernate.action.spi.AfterTransactionCompletionProcess;
 import org.hibernate.bytecode.enhance.spi.interceptor.LazyAttributeLoadingInterceptor;
@@ -551,11 +552,11 @@ public class StatefulPersistenceContext implements PersistenceContext {
 			final Object entity,
 			final Status status) {
 
-		((ManagedEntity)entity).$$_hibernate_getEntityEntry().setStatus( status );
-		entityEntryContext.addEntityEntry( entity, ((ManagedEntity)entity).$$_hibernate_getEntityEntry() );
+		((ManagedEntity)entity).$$_hibernate_getEntityEntry( session ).setStatus( status );
+		entityEntryContext.addEntityEntry( entity, ((ManagedEntity)entity).$$_hibernate_getEntityEntry( session ) );
 
 		setHasNonReadOnlyEnties( status );
-		return ((ManagedEntity)entity).$$_hibernate_getEntityEntry();
+		return ((ManagedEntity)entity).$$_hibernate_getEntityEntry( session );
 	}
 
 	@Override

@@ -43,23 +43,23 @@ public class BasicInSessionTest extends BaseCoreFunctionalTestCase {
 		MyEntity myEntity1 = s.get( MyEntity.class, 1L );
 		MyEntity myEntity2 = s.get( MyEntity.class, 2L );
 
-		assertNotNull( myEntity1.$$_hibernate_getEntityInstance() );
-		assertSame( myEntity1, myEntity1.$$_hibernate_getEntityInstance() );
-		assertNotNull( myEntity1.$$_hibernate_getEntityEntry() );
-		assertNull( myEntity1.$$_hibernate_getPreviousManagedEntity() );
-		assertNotNull( myEntity1.$$_hibernate_getNextManagedEntity() );
+		assertNotNull( myEntity1.$$_hibernate_getEntityInstance( s ) );
+		assertSame( myEntity1, myEntity1.$$_hibernate_getEntityInstance( s ));
+		assertNotNull( myEntity1.$$_hibernate_getEntityEntry( s ) );
+		assertNull( myEntity1.$$_hibernate_getPreviousManagedEntity( s ) );
+		assertNotNull( myEntity1.$$_hibernate_getNextManagedEntity( s ) );
 
-		assertNotNull( myEntity2.$$_hibernate_getEntityInstance() );
-		assertSame( myEntity2, myEntity2.$$_hibernate_getEntityInstance() );
-		assertNotNull( myEntity2.$$_hibernate_getEntityEntry() );
-		assertNotNull( myEntity2.$$_hibernate_getPreviousManagedEntity() );
-		assertNull( myEntity2.$$_hibernate_getNextManagedEntity() );
+		assertNotNull( myEntity2.$$_hibernate_getEntityInstance( s ) );
+		assertSame( myEntity2, myEntity2.$$_hibernate_getEntityInstance( s ) );
+		assertNotNull( myEntity2.$$_hibernate_getEntityEntry( s ) );
+		assertNotNull( myEntity2.$$_hibernate_getPreviousManagedEntity( s ) );
+		assertNull( myEntity2.$$_hibernate_getNextManagedEntity( s ) );
 
 		s.createQuery( "delete MyEntity" ).executeUpdate();
 		s.getTransaction().commit();
 		s.close();
 
-		assertNull( myEntity1.$$_hibernate_getEntityEntry() );
+		assertNull( myEntity1.$$_hibernate_getEntityEntry( s ) );
 	}
 
 	@Test

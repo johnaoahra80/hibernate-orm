@@ -35,18 +35,18 @@ public class BasicEnhancementTestTask extends AbstractEnhancerTestTask {
 		// Call the new ManagedEntity methods
 		assertTyping( ManagedEntity.class, entity );
 		ManagedEntity managedEntity = (ManagedEntity) entity;
-		assertSame( entity, managedEntity.$$_hibernate_getEntityInstance() );
+		assertSame( entity, managedEntity.$$_hibernate_getEntityInstance( null ) );
 
-		assertNull( managedEntity.$$_hibernate_getEntityEntry() );
-		managedEntity.$$_hibernate_setEntityEntry( EnhancerTestUtils.makeEntityEntry() );
-		assertNotNull( managedEntity.$$_hibernate_getEntityEntry() );
-		managedEntity.$$_hibernate_setEntityEntry( null );
-		assertNull( managedEntity.$$_hibernate_getEntityEntry() );
+		assertNull( managedEntity.$$_hibernate_getEntityEntry( null ) );
+		managedEntity.$$_hibernate_setEntityEntry(  null, EnhancerTestUtils.makeEntityEntry() );
+		assertNotNull( managedEntity.$$_hibernate_getEntityEntry( null ) );
+		managedEntity.$$_hibernate_setEntityEntry( null, null );
+		assertNull( managedEntity.$$_hibernate_getEntityEntry( null ) );
 
-		managedEntity.$$_hibernate_setNextManagedEntity( managedEntity );
-		managedEntity.$$_hibernate_setPreviousManagedEntity( managedEntity );
-		assertSame( managedEntity, managedEntity.$$_hibernate_getNextManagedEntity() );
-		assertSame( managedEntity, managedEntity.$$_hibernate_getPreviousManagedEntity() );
+		managedEntity.$$_hibernate_setNextManagedEntity( null, managedEntity );
+		managedEntity.$$_hibernate_setPreviousManagedEntity( null, managedEntity );
+		assertSame( managedEntity, managedEntity.$$_hibernate_getNextManagedEntity( null ) );
+		assertSame( managedEntity, managedEntity.$$_hibernate_getPreviousManagedEntity( null ) );
 
 		// Add an attribute interceptor...
 		assertTyping( PersistentAttributeInterceptable.class, entity );

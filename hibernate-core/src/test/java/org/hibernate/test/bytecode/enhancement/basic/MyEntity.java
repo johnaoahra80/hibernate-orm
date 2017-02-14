@@ -10,6 +10,8 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 
+import org.hibernate.Session;
+import org.hibernate.SharedSessionContract;
 import org.hibernate.engine.spi.EntityEntry;
 import org.hibernate.engine.spi.ManagedEntity;
 
@@ -55,37 +57,37 @@ public class MyEntity implements ManagedEntity {
 	}
 
 	@Override
-	public Object $$_hibernate_getEntityInstance() {
+	public Object $$_hibernate_getEntityInstance(SharedSessionContract session) {
 		return this;
 	}
 
 	@Override
-	public EntityEntry $$_hibernate_getEntityEntry() {
+	public EntityEntry $$_hibernate_getEntityEntry(SharedSessionContract session) {
 		return entityEntry;
 	}
 
 	@Override
-	public void $$_hibernate_setEntityEntry(EntityEntry entityEntry) {
+	public void $$_hibernate_setEntityEntry(SharedSessionContract session, EntityEntry entityEntry) {
 		this.entityEntry = entityEntry;
 	}
 
 	@Override
-	public ManagedEntity $$_hibernate_getNextManagedEntity() {
+	public ManagedEntity $$_hibernate_getNextManagedEntity(SharedSessionContract session) {
 		return next;
 	}
 
 	@Override
-	public void $$_hibernate_setNextManagedEntity(ManagedEntity next) {
+	public void $$_hibernate_setNextManagedEntity(SharedSessionContract session, ManagedEntity next) {
 		this.next = next;
 	}
 
 	@Override
-	public ManagedEntity $$_hibernate_getPreviousManagedEntity() {
+	public ManagedEntity $$_hibernate_getPreviousManagedEntity(SharedSessionContract session) {
 		return previous;
 	}
 
 	@Override
-	public void $$_hibernate_setPreviousManagedEntity(ManagedEntity previous) {
+	public void $$_hibernate_setPreviousManagedEntity(SharedSessionContract session, ManagedEntity previous) {
 		this.previous = previous;
 	}
 }

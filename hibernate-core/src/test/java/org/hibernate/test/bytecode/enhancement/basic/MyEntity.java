@@ -14,6 +14,7 @@ import org.hibernate.Session;
 import org.hibernate.SharedSessionContract;
 import org.hibernate.engine.spi.EntityEntry;
 import org.hibernate.engine.spi.ManagedEntity;
+import org.hibernate.engine.spi.PersistenceContext;
 
 /**
  * @author Steve Ebersole
@@ -57,37 +58,62 @@ public class MyEntity implements ManagedEntity {
 	}
 
 	@Override
-	public Object $$_hibernate_getEntityInstance(SharedSessionContract session) {
+	public Object $$_hibernate_getEntityInstance() {
 		return this;
 	}
 
 	@Override
-	public EntityEntry $$_hibernate_getEntityEntry(SharedSessionContract session) {
+	public EntityEntry $$_hibernate_getEntityEntry() {
+		return null;
+	}
+
+	@Override
+	public EntityEntry $$_hibernate_getEntityEntry(PersistenceContext persistenceContext) {
 		return entityEntry;
 	}
 
 	@Override
-	public void $$_hibernate_setEntityEntry(SharedSessionContract session, EntityEntry entityEntry) {
+	public void $$_hibernate_setEntityEntry(EntityEntry entityEntry) {
 		this.entityEntry = entityEntry;
 	}
 
 	@Override
-	public ManagedEntity $$_hibernate_getNextManagedEntity(SharedSessionContract session) {
+	public ManagedEntity $$_hibernate_getPreviousManagedEntity() {
+		return null;
+	}
+
+	@Override
+	public ManagedEntity $$_hibernate_getNextManagedEntity(PersistenceContext persistenceContext) {
 		return next;
 	}
 
 	@Override
-	public void $$_hibernate_setNextManagedEntity(SharedSessionContract session, ManagedEntity next) {
+	public void $$_hibernate_setNextManagedEntity(ManagedEntity next) {
+
+	}
+
+	@Override
+	public void $$_hibernate_setNextManagedEntity(PersistenceContext persistenceContext, ManagedEntity next) {
 		this.next = next;
 	}
 
 	@Override
-	public ManagedEntity $$_hibernate_getPreviousManagedEntity(SharedSessionContract session) {
+	public ManagedEntity $$_hibernate_getPreviousManagedEntity(PersistenceContext persistenceContext) {
 		return previous;
 	}
 
 	@Override
-	public void $$_hibernate_setPreviousManagedEntity(SharedSessionContract session, ManagedEntity previous) {
+	public void $$_hibernate_setPreviousManagedEntity(ManagedEntity previous) {
+
+	}
+
+	@Override
+	public void $$_hibernate_setPreviousManagedEntity(PersistenceContext persistenceContext, ManagedEntity previous) {
 		this.previous = previous;
+	}
+
+	@Override
+	public ManagedEntity $$_hibernate_getNextManagedEntity() {
+		return null;
 	}
 }

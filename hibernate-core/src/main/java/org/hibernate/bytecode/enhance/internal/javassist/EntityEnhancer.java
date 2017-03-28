@@ -16,6 +16,7 @@ import java.util.Map;
 import javassist.CannotCompileException;
 import javassist.CtClass;
 import javassist.CtField;
+import javassist.CtNewMethod;
 import javassist.Modifier;
 
 import javassist.NotFoundException;
@@ -58,7 +59,20 @@ public class EntityEnhancer extends PersistentAttributesEnhancer {
 		addLinkedNextHandling( managedCtClass );
 		addInterceptorHandling( managedCtClass );
 
-		if ( enhancementContext.doDirtyCheckingInline( managedCtClass ) ) {
+
+       try {
+          managedCtClass.addMethod( CtNewMethod.make( "public org.hibernate.engine.spi.EntityEntry $$_hibernate_getEntityEntry( org.hibernate.engine.spi.PersistenceContext persistenceContext ) { return this.$$_hibernate_entityEntryHolder; }", managedCtClass )  );
+          managedCtClass.addMethod( CtNewMethod.make( "public org.hibernate.engine.spi.ManagedEntity $$_hibernate_getPreviousManagedEntity(org.hibernate.engine.spi.PersistenceContext persistenceContext) { return this.$$_hibernate_previousManagedEntity; }", managedCtClass )  );
+          managedCtClass.addMethod( CtNewMethod.make( "public void $$_hibernate_setPreviousManagedEntity(org.hibernate.engine.spi.PersistenceContext persistenceContext, org.hibernate.engine.spi.ManagedEntity paramManagedEntity) {  this.$$_hibernate_previousManagedEntity = paramManagedEntity; }", managedCtClass )  );
+          managedCtClass.addMethod( CtNewMethod.make( "public org.hibernate.engine.spi.ManagedEntity $$_hibernate_getNextManagedEntity(org.hibernate.engine.spi.PersistenceContext persistenceContext) { return this.$$_hibernate_nextManagedEntity; }", managedCtClass )  );
+          managedCtClass.addMethod( CtNewMethod.make( "public void $$_hibernate_setNextManagedEntity(org.hibernate.engine.spi.PersistenceContext persistenceContext, org.hibernate.engine.spi.ManagedEntity paramManagedEntity) { this.$$_hibernate_nextManagedEntity = paramManagedEntity; }", managedCtClass )  );
+       } catch (CannotCompileException e) {
+          e.printStackTrace();
+       }
+
+
+
+       if ( enhancementContext.doDirtyCheckingInline( managedCtClass ) ) {
 			addInLineDirtyHandling( managedCtClass );
 		}
 

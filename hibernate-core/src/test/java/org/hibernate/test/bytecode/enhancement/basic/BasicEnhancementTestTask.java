@@ -35,12 +35,12 @@ public class BasicEnhancementTestTask extends AbstractEnhancerTestTask {
 		// Call the new ManagedEntity methods
 		assertTyping( ManagedEntity.class, entity );
 		ManagedEntity managedEntity = (ManagedEntity) entity;
-		assertSame( entity, managedEntity.$$_hibernate_getEntityInstance( null ) );
+		assertSame( entity, managedEntity.$$_hibernate_getEntityInstance(  ) );
 
 		assertNull( managedEntity.$$_hibernate_getEntityEntry( null ) );
-		managedEntity.$$_hibernate_setEntityEntry(  null, EnhancerTestUtils.makeEntityEntry() );
+		managedEntity.$$_hibernate_setEntityEntry(   EnhancerTestUtils.makeEntityEntry() );
 		assertNotNull( managedEntity.$$_hibernate_getEntityEntry( null ) );
-		managedEntity.$$_hibernate_setEntityEntry( null, null );
+		managedEntity.$$_hibernate_setEntityEntry( null );
 		assertNull( managedEntity.$$_hibernate_getEntityEntry( null ) );
 
 		managedEntity.$$_hibernate_setNextManagedEntity( null, managedEntity );

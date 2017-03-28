@@ -16,6 +16,7 @@ import org.hibernate.cfg.AvailableSettings;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.engine.spi.EntityEntry;
 import org.hibernate.engine.spi.ManagedEntity;
+import org.hibernate.engine.spi.PersistenceContext;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.engine.spi.Status;
 import org.hibernate.persister.entity.EntityPersister;
@@ -68,7 +69,7 @@ public class ByteCodeEnhancedImmutableReferenceCacheTest extends BaseCoreFunctio
 		s.getTransaction().commit();
 		s.close();
 
-		assertNotNull( myReferenceData.$$_hibernate_getEntityEntry( s ) );
+		assertNotNull( myReferenceData.$$_hibernate_getEntityEntry(  ) );
 
 		// now load it in another
 		s = openSession();
@@ -113,8 +114,8 @@ public class ByteCodeEnhancedImmutableReferenceCacheTest extends BaseCoreFunctio
 		s1.getTransaction().commit();
 		s1.close();
 
-		assertNotNull( myReferenceData.$$_hibernate_getEntityEntry( s1 ) );
-		assertNotNull( myOtherReferenceData.$$_hibernate_getEntityEntry( s1 ) );
+		assertNotNull( myReferenceData.$$_hibernate_getEntityEntry(  ) );
+		assertNotNull( myOtherReferenceData.$$_hibernate_getEntityEntry( ) );
 
 		// now associate myReferenceData with 2 sessions
 		s1 = openSession();
@@ -124,17 +125,17 @@ public class ByteCodeEnhancedImmutableReferenceCacheTest extends BaseCoreFunctio
 		assertTrue( s1.contains( myReferenceData ) );
 		assertTrue( s1.contains( myOtherReferenceData ) );
 		// prev/next references should be null; entityEntry should be non-null;
-		assertNull( myReferenceData.$$_hibernate_getPreviousManagedEntity( s1 ) );
-		assertNull( myReferenceData.$$_hibernate_getNextManagedEntity( s1 ) );
-		assertNull( myOtherReferenceData.$$_hibernate_getPreviousManagedEntity( s1 ) );
-		assertNull( myOtherReferenceData.$$_hibernate_getNextManagedEntity( s1 ) );
+		assertNull( myReferenceData.$$_hibernate_getPreviousManagedEntity( ) );
+		assertNull( myReferenceData.$$_hibernate_getNextManagedEntity( ) );
+		assertNull( myOtherReferenceData.$$_hibernate_getPreviousManagedEntity( ) );
+		assertNull( myOtherReferenceData.$$_hibernate_getNextManagedEntity( ) );
 
 		assertSame(
-				myReferenceData.$$_hibernate_getEntityEntry( s1 ),
+				myReferenceData.$$_hibernate_getEntityEntry( ),
 				( (SharedSessionContractImplementor) s1 ).getPersistenceContext().getEntry( myReferenceData )
 		);
 		assertSame(
-				myOtherReferenceData.$$_hibernate_getEntityEntry( s1 ),
+				myOtherReferenceData.$$_hibernate_getEntityEntry( ),
 				( (SharedSessionContractImplementor) s1 ).getPersistenceContext().getEntry( myOtherReferenceData )
 		);
 
@@ -183,8 +184,8 @@ public class ByteCodeEnhancedImmutableReferenceCacheTest extends BaseCoreFunctio
 		s1.close();
 
 		// EntityEntry should still be set
-		assertNotNull( myReferenceData.$$_hibernate_getEntityEntry( s1 ) );
-		assertNotNull( myOtherReferenceData.$$_hibernate_getEntityEntry( s1 ) );
+		assertNotNull( myReferenceData.$$_hibernate_getEntityEntry( ) );
+		assertNotNull( myOtherReferenceData.$$_hibernate_getEntityEntry( ) );
 
 		// load them into 2 sessions
 		s1 = openSession();
@@ -197,32 +198,32 @@ public class ByteCodeEnhancedImmutableReferenceCacheTest extends BaseCoreFunctio
 		assertSame( myReferenceData, s2.get( MyEnhancedReferenceData.class, myReferenceData.getId() ) );
 		assertSame( myOtherReferenceData, s2.get( MyEnhancedReferenceData.class, myOtherReferenceData.getId() ) );
 
-		assertEquals( Status.READ_ONLY, myReferenceData.$$_hibernate_getEntityEntry( s2 ).getStatus() );
-		assertEquals( Status.READ_ONLY, myOtherReferenceData.$$_hibernate_getEntityEntry( s2 ).getStatus() );
+		assertEquals( Status.READ_ONLY, myReferenceData.$$_hibernate_getEntityEntry( ).getStatus() );
+		assertEquals( Status.READ_ONLY, myOtherReferenceData.$$_hibernate_getEntityEntry( ).getStatus() );
 
 		// delete myReferenceData from s1
 		s1.delete( myReferenceData );
 
-		assertEquals( Status.DELETED, myReferenceData.$$_hibernate_getEntityEntry( s1 ).getStatus() );
-		assertEquals( Status.READ_ONLY, myOtherReferenceData.$$_hibernate_getEntityEntry( s1 ).getStatus() );
+		assertEquals( Status.DELETED, myReferenceData.$$_hibernate_getEntityEntry( ).getStatus() );
+		assertEquals( Status.READ_ONLY, myOtherReferenceData.$$_hibernate_getEntityEntry( ).getStatus() );
 
 		// delete myOtherReferenceData from s2
 		s2.delete( myOtherReferenceData );
 
-		assertEquals( Status.DELETED, myReferenceData.$$_hibernate_getEntityEntry( s2 ).getStatus() );
-		assertEquals( Status.DELETED, myOtherReferenceData.$$_hibernate_getEntityEntry( s2 ).getStatus() );
+		assertEquals( Status.DELETED, myReferenceData.$$_hibernate_getEntityEntry( ).getStatus() );
+		assertEquals( Status.DELETED, myOtherReferenceData.$$_hibernate_getEntityEntry( ).getStatus() );
 
 		s1.getTransaction().commit();
 		s1.close();
 
-		assertEquals( Status.GONE, myReferenceData.$$_hibernate_getEntityEntry( s1 ).getStatus() );
-		assertEquals( Status.DELETED, myOtherReferenceData.$$_hibernate_getEntityEntry(s1 ).getStatus() );
+		assertEquals( Status.GONE, myReferenceData.$$_hibernate_getEntityEntry( ).getStatus() );
+		assertEquals( Status.DELETED, myOtherReferenceData.$$_hibernate_getEntityEntry( ).getStatus() );
 
 		s2.getTransaction().commit();
 		s2.close();
 
-		assertEquals( Status.GONE, myReferenceData.$$_hibernate_getEntityEntry( s2 ).getStatus() );
-		assertEquals( Status.GONE, myOtherReferenceData.$$_hibernate_getEntityEntry( s2 ).getStatus() );
+		assertEquals( Status.GONE, myReferenceData.$$_hibernate_getEntityEntry( ).getStatus() );
+		assertEquals( Status.GONE, myOtherReferenceData.$$_hibernate_getEntityEntry( ).getStatus() );
 	}
 
 	@Entity(name = "MyEnhancedReferenceData")
@@ -278,38 +279,63 @@ public class ByteCodeEnhancedImmutableReferenceCacheTest extends BaseCoreFunctio
 		}
 
 		@Override
-		public Object $$_hibernate_getEntityInstance(SharedSessionContract session) {
+		public Object $$_hibernate_getEntityInstance() {
 			return this;
 		}
 
 		@Override
-		public EntityEntry $$_hibernate_getEntityEntry(SharedSessionContract session) {
+		public EntityEntry $$_hibernate_getEntityEntry() {
+			return null;
+		}
+
+		@Override
+		public EntityEntry $$_hibernate_getEntityEntry(PersistenceContext persistenceContext) {
 			return entityEntry;
 		}
 
 		@Override
-		public void $$_hibernate_setEntityEntry(SharedSessionContract session, EntityEntry entityEntry) {
+		public void $$_hibernate_setEntityEntry(EntityEntry entityEntry) {
 			this.entityEntry = entityEntry;
 		}
 
 		@Override
-		public ManagedEntity $$_hibernate_getNextManagedEntity(SharedSessionContract session) {
+		public ManagedEntity $$_hibernate_getPreviousManagedEntity() {
+			return null;
+		}
+
+		@Override
+		public ManagedEntity $$_hibernate_getNextManagedEntity(PersistenceContext persistenceContext) {
 			return next;
 		}
 
 		@Override
-		public void $$_hibernate_setNextManagedEntity(SharedSessionContract session, ManagedEntity next) {
+		public void $$_hibernate_setNextManagedEntity(ManagedEntity next) {
+
+		}
+
+		@Override
+		public void $$_hibernate_setNextManagedEntity(PersistenceContext persistenceContext, ManagedEntity next) {
 			this.next = next;
 		}
 
 		@Override
-		public ManagedEntity $$_hibernate_getPreviousManagedEntity(SharedSessionContract session) {
+		public ManagedEntity $$_hibernate_getPreviousManagedEntity(PersistenceContext persistenceContext) {
 			return previous;
 		}
 
 		@Override
-		public void $$_hibernate_setPreviousManagedEntity(SharedSessionContract session, ManagedEntity previous) {
+		public void $$_hibernate_setPreviousManagedEntity(ManagedEntity previous) {
+
+		}
+
+		@Override
+		public void $$_hibernate_setPreviousManagedEntity(PersistenceContext persistenceContext, ManagedEntity previous) {
 			this.previous = previous;
+		}
+
+		@Override
+		public ManagedEntity $$_hibernate_getNextManagedEntity() {
+			return null;
 		}
 
 	}

@@ -9,6 +9,7 @@ package org.hibernate.event.internal;
 import java.io.Serializable;
 import java.util.Map;
 
+import org.apache.tools.ant.taskdefs.PathConvert;
 import org.hibernate.HibernateException;
 import org.hibernate.action.internal.CollectionRecreateAction;
 import org.hibernate.action.internal.CollectionRemoveAction;
@@ -133,12 +134,15 @@ public abstract class AbstractFlushingEventListener implements Serializable {
 
 		final Object anything = getAnything();
 		//safe from concurrent modification because of how concurrentEntries() is implemented on IdentityMap
-		for ( Map.Entry<Object,EntityEntry> me : persistenceContext.reentrantSafeEntityEntries() ) {
+		Map.Entry<Object,EntityEntry>[] mapEntries = persistenceContext.reentrantSafeEntityEntries();
+		for ( Map.Entry<Object,EntityEntry> me : mapEntries ) {
 //		for ( Map.Entry me : IdentityMap.concurrentEntries( persistenceContext.getEntityEntries() ) ) {
-			EntityEntry entry = (EntityEntry) me.getValue();
-			Status status = entry.getStatus();
-			if ( status == Status.MANAGED || status == Status.SAVING || status == Status.READ_ONLY ) {
-				cascadeOnFlush( session, entry.getPersister(), me.getKey(), anything );
+			if ( me != null ) {
+				EntityEntry entry = (EntityEntry) me.getValue();
+				Status status = entry.getStatus();
+				if ( status == Status.MANAGED || status == Status.SAVING || status == Status.READ_ONLY ) {
+					cascadeOnFlush( session, entry.getPersister(), me.getKey(), anything );
+				}
 			}
 		}
 	}

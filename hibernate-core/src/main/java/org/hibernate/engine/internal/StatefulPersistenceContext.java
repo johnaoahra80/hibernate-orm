@@ -552,11 +552,11 @@ public class StatefulPersistenceContext implements PersistenceContext {
 			final Object entity,
 			final Status status) {
 
-		((ManagedEntity)entity).$$_hibernate_getEntityEntry( session ).setStatus( status );
-		entityEntryContext.addEntityEntry( entity, ((ManagedEntity)entity).$$_hibernate_getEntityEntry( session ) );
+		((ManagedEntity)entity).$$_hibernate_getEntityEntry( session.getPersistenceContext() ).setStatus( status );
+		entityEntryContext.addEntityEntry( entity, ((ManagedEntity)entity).$$_hibernate_getEntityEntry( session.getPersistenceContext() ) );
 
 		setHasNonReadOnlyEnties( status );
-		return ((ManagedEntity)entity).$$_hibernate_getEntityEntry( session );
+		return ((ManagedEntity)entity).$$_hibernate_getEntityEntry( session.getPersistenceContext() );
 	}
 
 	@Override

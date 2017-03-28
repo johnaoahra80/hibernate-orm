@@ -58,29 +58,29 @@ public class EvictionTestTask extends AbstractEnhancerTestTask {
 		ManagedEntity managedParent = (ManagedEntity) loadedParent;
 
 		// before eviction
-		assertNotNull( managedParent.$$_hibernate_getEntityInstance( s ) );
-		assertNotNull( managedParent.$$_hibernate_getEntityEntry( s ) );
-		assertNull( managedParent.$$_hibernate_getPreviousManagedEntity( s ) );
-		assertNull( managedParent.$$_hibernate_getNextManagedEntity( s ) );
+		assertNotNull( managedParent.$$_hibernate_getEntityInstance( ) );
+		assertNotNull( managedParent.$$_hibernate_getEntityEntry( ) );
+		assertNull( managedParent.$$_hibernate_getPreviousManagedEntity( ) );
+		assertNull( managedParent.$$_hibernate_getNextManagedEntity( ) );
 
 		assertTrue( s.contains( managedParent ) );
 		s.evict( managedParent );
 
 		// after eviction
 		assertFalse( s.contains( managedParent ) );
-		assertNotNull( managedParent.$$_hibernate_getEntityInstance( s ) );
-		assertNull( managedParent.$$_hibernate_getEntityEntry( s ) );
-		assertNull( managedParent.$$_hibernate_getPreviousManagedEntity( s ) );
-		assertNull( managedParent.$$_hibernate_getNextManagedEntity( s ) );
+		assertNotNull( managedParent.$$_hibernate_getEntityInstance( ) );
+		assertNull( managedParent.$$_hibernate_getEntityEntry( ) );
+		assertNull( managedParent.$$_hibernate_getPreviousManagedEntity( ) );
+		assertNull( managedParent.$$_hibernate_getNextManagedEntity( ) );
 
 		// evict again
 		s.evict( managedParent );
 
 		assertFalse( s.contains( managedParent ) );
-		assertNotNull( managedParent.$$_hibernate_getEntityInstance( s ) );
-		assertNull( managedParent.$$_hibernate_getEntityEntry( s ) );
-		assertNull( managedParent.$$_hibernate_getPreviousManagedEntity( s ) );
-		assertNull( managedParent.$$_hibernate_getNextManagedEntity( s ) );
+		assertNotNull( managedParent.$$_hibernate_getEntityInstance( ) );
+		assertNull( managedParent.$$_hibernate_getEntityEntry( ) );
+		assertNull( managedParent.$$_hibernate_getPreviousManagedEntity( ) );
+		assertNull( managedParent.$$_hibernate_getNextManagedEntity( ) );
 
 		s.delete( managedParent );
 

@@ -33,6 +33,7 @@ import org.hibernate.engine.spi.Managed;
 import org.hibernate.engine.spi.ManagedComposite;
 import org.hibernate.engine.spi.ManagedEntity;
 import org.hibernate.engine.spi.ManagedMappedSuperclass;
+import org.hibernate.engine.spi.PersistenceContext;
 import org.hibernate.engine.spi.PersistentAttributeInterceptable;
 import org.hibernate.engine.spi.PersistentAttributeInterceptor;
 import org.hibernate.internal.CoreLogging;
@@ -158,7 +159,38 @@ public class EnhancerImpl implements Enhancer {
 					EnhancerConstants.NEXT_SETTER_NAME
 			);
 
-			builder = addInterceptorHandling( builder, managedCtClass );
+
+
+//           builder = builder.defineMethod( EnhancerConstants.PREVIOUS_FIELD_NAME, ManagedEntity.class).withParameter( PersistenceContext.class ).intercept(  );
+			builder = builder.defineMethod( EnhancerConstants.ENTITY_ENTRY_GETTER_NAME, EntityEntry.class, Visibility.PUBLIC )
+				.withParameters( PersistenceContext.class )
+				.intercept( FieldAccessor.ofField( EnhancerConstants.ENTITY_ENTRY_FIELD_NAME ) );
+
+			builder = builder.defineMethod( EnhancerConstants.ENTITY_ENTRY_SETTER_NAME, void.class, Visibility.PUBLIC )
+				.withParameters( PersistenceContext.class, EntityEntry.class )
+				.intercept( FieldAccessor.ofField( EnhancerConstants.ENTITY_ENTRY_FIELD_NAME ) );
+
+
+
+			builder = builder.defineMethod( EnhancerConstants.PREVIOUS_GETTER_NAME, ManagedEntity.class, Visibility.PUBLIC )
+              .withParameters( PersistenceContext.class )
+              .intercept( FieldAccessor.ofField( EnhancerConstants.PREVIOUS_FIELD_NAME ) );
+
+           builder = builder.defineMethod( EnhancerConstants.PREVIOUS_SETTER_NAME, void.class, Visibility.PUBLIC )
+              .withParameters( PersistenceContext.class, ManagedEntity.class )
+              .intercept( FieldAccessor.ofField( EnhancerConstants.PREVIOUS_FIELD_NAME ) );
+
+           builder = builder.defineMethod( EnhancerConstants.NEXT_GETTER_NAME, ManagedEntity.class, Visibility.PUBLIC )
+              .withParameters( PersistenceContext.class )
+              .intercept( FieldAccessor.ofField( EnhancerConstants.NEXT_FIELD_NAME ) );
+
+           builder = builder.defineMethod( EnhancerConstants.NEXT_SETTER_NAME, void.class, Visibility.PUBLIC )
+              .withParameters( PersistenceContext.class , ManagedEntity.class )
+              .intercept( FieldAccessor.ofField( EnhancerConstants.NEXT_FIELD_NAME ) );
+
+
+
+           builder = addInterceptorHandling( builder, managedCtClass );
 
 			if ( enhancementContext.doDirtyCheckingInline( managedCtClass ) ) {
 				builder = builder.implement( ExtendedSelfDirtinessTracker.class )

@@ -76,9 +76,7 @@ public class EntityEntryContext {
 		//		call is simply setting up a "marker" to avoid infinite looping from reentrancy
 
 		// any addition (even the double one described above) should invalidate the cross-ref array
-		System.out.println("Before:: =" + dirty);
 		dirty = true;
-		System.out.println("After:: =" + dirty);
 
 		assert AbstractEntityEntry.class.isInstance( entityEntry );
 
@@ -578,7 +576,13 @@ public class EntityEntryContext {
 
 		@Override
 		public void $$_hibernate_setNextManagedEntity(PersistenceContext persistenceContext, ManagedEntity next) {
-			$$_hibernate_setNextManagedEntity( next );
+			if (this.nextHead == null) {
+				this.nextHead = new PersistenceAwareManagedEntity( persistenceContext, next );
+				this.nextTail = this.nextHead;
+			}
+			else {
+				this.nextTail = new PersistenceAwareManagedEntity( persistenceContext, next );;
+			}
 		}
 
 		@Override

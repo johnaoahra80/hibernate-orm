@@ -56,9 +56,10 @@ public class PooledLoThreadLocalOptimizer extends AbstractOptimizer {
 
 	@Override
 	public Serializable generate(AccessCallback callback) {
+		GenerationState local = null;
 		if ( callback.getTenantIdentifier() == null ) {
-			final GenerationState local = localAssignedIds.get();
-			if ( local.value != null && local.value.lt( local.upperLimitValue ) ) {
+			local = localAssignedIds.get();
+			if ( local != null && local.value.lt( local.upperLimitValue ) ) {
 				return local.value.makeValueThenIncrement();
 			}
 		}
@@ -81,11 +82,16 @@ public class PooledLoThreadLocalOptimizer extends AbstractOptimizer {
 	}
 
 	private Map<String, GenerationState> tenantSpecificState;
-	private final ThreadLocal<GenerationState> localAssignedIds = ThreadLocal.withInitial( GenerationState::new );
+	private final ThreadLocal<GenerationState> localAssignedIds = new ThreadLocal<GenerationState>();
 
 	private GenerationState locateGenerationState(String tenantIdentifier) {
 		if ( tenantIdentifier == null ) {
-			return localAssignedIds.get();
+			GenerationState noTenantState = localAssignedIds.get();
+			if ( noTenantState == null ) {
+				noTenantState = new GenerationState();
+				localAssignedIds.set(noTenantState);
+			}
+			return noTenantState;
 		}
 		else {
 			GenerationState state;

@@ -23,7 +23,6 @@ import org.hibernate.ConnectionReleaseMode;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
 import org.hibernate.context.spi.AbstractCurrentSessionContext;
 import org.hibernate.engine.jdbc.LobCreationContext;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
@@ -55,7 +54,6 @@ import org.jboss.logging.Logger;
  * subclassing (for long-running session scenarios, for example).
  *
  * @author Steve Ebersole
- * @author Sanne Grinovero
  */
 public class ThreadLocalSessionContext extends AbstractCurrentSessionContext {
 	private static final CoreMessageLogger LOG = Logger.getMessageLogger(
@@ -76,7 +74,7 @@ public class ThreadLocalSessionContext extends AbstractCurrentSessionContext {
 	 * the possibility for multiple SessionFactory instances being used during execution
 	 * of the given thread.
 	 */
-	private static final ThreadLocal<Map<SessionFactory,Session>> CONTEXT_TL = ThreadLocal.withInitial( HashMap::new );
+	private static final ThreadLocal<Map> CONTEXT_TL = new ThreadLocal<Map>();
 
 	/**
 	 * Constructs a ThreadLocal
@@ -109,10 +107,12 @@ public class ThreadLocalSessionContext extends AbstractCurrentSessionContext {
 
 	private boolean needsWrapping(Session session) {
 		// try to make sure we don't wrap and already wrapped session
-		if ( Proxy.isProxyClass( session.getClass() ) ) {
-			final InvocationHandler invocationHandler = Proxy.getInvocationHandler( session );
-			if ( invocationHandler != null && TransactionProtectionWrapper.class.isInstance( invocationHandler ) ) {
-				return false;
+		if ( session != null ) {
+			if ( Proxy.isProxyClass( session.getClass() ) ) {
+				final InvocationHandler invocationHandler = Proxy.getInvocationHandler( session );
+				if ( invocationHandler != null && TransactionProtectionWrapper.class.isInstance( invocationHandler ) ) {
+					return false;
+				}
 			}
 		}
 		return true;
@@ -194,32 +194,28 @@ public class ThreadLocalSessionContext extends AbstractCurrentSessionContext {
 	 */
 	public static void bind(org.hibernate.Session session) {
 		final SessionFactory factory = session.getSessionFactory();
+		cleanupAnyOrphanedSession( factory );
 		doBind( session, factory );
 	}
 
-	private static void terminateOrphanedSession(Session orphan) {
+	private static void cleanupAnyOrphanedSession(SessionFactory factory) {
+		final Session orphan = doUnbind( factory, false );
 		if ( orphan != null ) {
 			LOG.alreadySessionBound();
 			try {
-				final Transaction orphanTransaction = orphan.getTransaction();
-				if ( orphanTransaction != null && orphanTransaction.getStatus() == TransactionStatus.ACTIVE ) {
+				if ( orphan.getTransaction() != null && orphan.getTransaction().getStatus() == TransactionStatus.ACTIVE ) {
 					try {
-						orphanTransaction.rollback();
+						orphan.getTransaction().rollback();
 					}
 					catch( Throwable t ) {
 						LOG.debug( "Unable to rollback transaction for orphaned session", t );
 					}
 				}
+				orphan.close();
 			}
-			finally {
-				try {
-					orphan.close();
-				}
-				catch( Throwable t ) {
-					LOG.debug( "Unable to close orphaned session", t );
-				}
+			catch( Throwable t ) {
+				LOG.debug( "Unable to close orphaned session", t );
 			}
-
 		}
 	}
 
@@ -234,25 +230,35 @@ public class ThreadLocalSessionContext extends AbstractCurrentSessionContext {
 	}
 
 	private static Session existingSession(SessionFactory factory) {
-		return sessionMap().get( factory );
+		final Map sessionMap = sessionMap();
+		if ( sessionMap == null ) {
+			return null;
+		}
+		return (Session) sessionMap.get( factory );
 	}
 
-	protected static Map<SessionFactory,Session> sessionMap() {
+	protected static Map sessionMap() {
 		return CONTEXT_TL.get();
 	}
 
 	@SuppressWarnings({"unchecked"})
 	private static void doBind(org.hibernate.Session session, SessionFactory factory) {
-		Session orphanedPreviousSession = sessionMap().put( factory, session );
-		terminateOrphanedSession( orphanedPreviousSession );
+		Map sessionMap = sessionMap();
+		if ( sessionMap == null ) {
+			sessionMap = new HashMap();
+			CONTEXT_TL.set( sessionMap );
+		}
+		sessionMap.put( factory, session );
 	}
 
 	private static Session doUnbind(SessionFactory factory, boolean releaseMapIfEmpty) {
-		final Map<SessionFactory, Session> sessionMap = sessionMap();
-		final Session session = sessionMap.remove( factory );
-		if ( releaseMapIfEmpty && sessionMap.isEmpty() ) {
-			//Do not use set(null) as it would prevent the initialValue to be invoked again in case of need.
-			CONTEXT_TL.remove();
+		Session session = null;
+		final Map sessionMap = sessionMap();
+		if ( sessionMap != null ) {
+			session = (Session) sessionMap.remove( factory );
+			if ( releaseMapIfEmpty && sessionMap.isEmpty() ) {
+				CONTEXT_TL.set( null );
+			}
 		}
 		return session;
 	}
